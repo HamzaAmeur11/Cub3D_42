@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/11/29 17:42:21 by hameur           ###   ########.fr       */
+/*   Updated: 2022/11/30 15:14:37 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define CUB3D_H
 
 #define FAILDE -1
+#define CHECK -2
 
 #include <mlx.h>
 #include <math.h>
@@ -33,6 +34,17 @@ typedef struct t_map
 	char	*we;
 	char	*ea;
 }	t_map;
+
+typedef struct t_check
+{
+	int	no;
+	int	so;
+	int	we;
+	int	ea;
+	int	map;
+	int	fl;
+	int	ce;
+}	t_check;
 
 
 
