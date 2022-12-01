@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/11/30 18:46:28 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/01 20:11:29 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,14 +79,11 @@ void check_colors(char *file, int *check)
 		*check = FAILDE;
 		return ;
 	}
+	while (file[i] != 0 && ((file[i] >= '0' && file[i] <= '9') || file[i] == ','))
+		i++;
 	while (file[i] != 0 && ((file[i] >= 9 && file[i] <= 13) || file[i] == ' '))
-	{
-		if ((file[i] >= '0' && file[i] <= '9') || file[i] == ',')
-			i++;
-		else
-			break;
-	}
-	if (file[i] != 0 && !((file[i] >= 9 && file[i] <= 13) || file[i] == ' '))
+		i++;
+	if (file[i] != 0)
 		*check = FAILDE;
 	else
 		*check = EXIT_SUCCESS;
@@ -100,11 +97,11 @@ void check_xpms(char *file, int *check)
 		i++;
 	while (file[i] != 0)
 	{
-		if (file[i] != '.')
+		if (file[i] == '.')
 			j = i;
 		i++;
 	}
-	if (j == -1 || file[i] == 0)
+	if (j == -1)
 		*check = FAILDE;
 	else if (ft_strncmp((char *)".xpm", file + j, 4) != EXIT_SUCCESS)
 		*check = FAILDE;	
@@ -112,18 +109,48 @@ void check_xpms(char *file, int *check)
 		*check = EXIT_SUCCESS;
 }
 
+int check_check(t_check *check)
+{
+	if (check->no != EXIT_SUCCESS)
+		return (ft_putstr_fd((char *)"Syntaxe error in map !\n", 2), EXIT_FAILURE);
+	if (check->so != EXIT_SUCCESS)
+		return (ft_putstr_fd((char *)"Syntaxe error in map !!\n", 2), EXIT_FAILURE);
+	if (check->we != EXIT_SUCCESS)
+		return (ft_putstr_fd((char *)"Syntaxe error in map !!!\n", 2), EXIT_FAILURE);
+	if (check->ea != EXIT_SUCCESS)
+		return (ft_putstr_fd((char *)"Syntaxe error in map !!!!\n", 2), EXIT_FAILURE);
+	if (check->fl != EXIT_SUCCESS)
+		return (ft_putstr_fd((char *)"Syntaxe error in map !!!!!\n", 2), EXIT_FAILURE);
+	if (check->ce != EXIT_SUCCESS)
+		return (ft_putstr_fd((char *)"Syntaxe error in map !!!!!!\n", 2), EXIT_FAILURE);
+	return (EXIT_SUCCESS);
+}
+
 int check_rgb_and_xpms(char **file, t_check *check)
 {
 	int	i = 0;
 	while (file[i] != NULL && (file[i][0] != '1' || file[i][0] !=  ' '))
 	{
+		printf("[%s]\n", file[i]);
 		if (!ft_strncmp((char *)"C", file[i], 1) && check->ce == CHECK)
 			check_colors(file[i], &check->ce);
-		if (!ft_strncmp((char *)"F", file[i], 1) && check->ce == CHECK)
+		else if (!ft_strncmp((char *)"F", file[i], 1) && check->fl == CHECK)
 			check_colors(file[i], &check->fl);
-		if (!ft_strncmp((char *)"NO", file[i], 2))
+		else if (!ft_strncmp((char *)"NO", file[i], 2) && check->no == CHECK)
 			check_xpms(file[i], &check->no);
+		else if (!ft_strncmp((char *)"SO", file[i], 2) && check->so == CHECK)
+			check_xpms(file[i], &check->so);
+		else if (!ft_strncmp((char *)"WE", file[i], 2) && check->we == CHECK)
+			check_xpms(file[i], &check->we);
+		else if (!ft_strncmp((char *)"EA", file[i], 2) && check->ea == CHECK)
+			check_xpms(file[i], &check->ea);
+		else
+			break ;
+		i++;
 	}
+	if (check_check(check) != EXIT_SUCCESS)
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
 void init_check(t_check *check)
@@ -142,15 +169,15 @@ int check_file(char **file)
 	t_check check;
 	
 	init_check(&check);
-	// if (check_rgb_and_xpms(file, &check) != EXIT_SUCCESS)
-	// 	return (EXIT_FAILURE);
+	if (check_rgb_and_xpms(file, &check) != EXIT_SUCCESS)
+		return (EXIT_FAILURE);
 	//Hnaaaaa khdemha
-	
+	return (EXIT_SUCCESS);
 }
 
-void init_map(t_map *map, char **file)
-{
-}
+// void init_map(t_map *map, char **file)
+// {
+// }
 
 int	parse_map(t_map *map, char *file_name)
 {
@@ -161,10 +188,13 @@ int	parse_map(t_map *map, char *file_name)
 	file = NULL;
 	file = init_file(file_name);
 	if (file == NULL)//protect NULL IN file to the next fct
-		return (NULL);
+		return (EXIT_FAILURE);
 	if (check_file(file) != EXIT_SUCCESS)
 		return(EXIT_FAILURE);
-	init_map(map, file);
+	// init_map(map, file);
+	int i = 0;
+	while (file[i] != NULL)
+		printf("--->%s\n", file[i++]);
 	return (EXIT_SUCCESS);
 }
 
