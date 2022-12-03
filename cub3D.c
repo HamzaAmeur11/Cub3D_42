@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/03 18:03:56 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/03 19:42:28 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,15 +169,39 @@ void init_check(t_check *check)
 	check->ce = CHECK;
 }
 
-// int check_map(char **file, t_check *check)
-// {
-// 	int	i;
+char *init_xpms(char *str)
+{
+	int i = 2;
+	while (str[i] != 0 && ((str[i] >= 9 && str[i] <= 13) || str[i] == ' '))
+		i++;
+	return (ft_strdup(str + i));
+}
 
-// 	i = 0;
-// 	while (file[i] != NULL && (file[i][0] != '1' || file[i][0] !=  ' '))
-// 		i++;
+// int init_colors(char *str)
+// {
 	
 // }
+
+void init_xpm_clr(t_map *map, char **file)
+{
+	int	i = 0;
+	while (file[i] != NULL && (file[i][0] != '1' || file[i][0] !=  ' '))
+	{
+		/*if (!ft_strncmp((char *)"C", file[i], 1))
+			map->ce = init_colors(file[i]);
+		else if (!ft_strncmp((char *)"F", file[i], 1))
+			map->fl = init_colors(file[i]);
+		else */if (!ft_strncmp((char *)"NO", file[i], 2))
+			map->no = init_xpms(file[i]);
+		else if (!ft_strncmp((char *)"SO", file[i], 2))
+			map->so = init_xpms(file[i]);
+		else if (!ft_strncmp((char *)"WE", file[i], 2))
+			map->we = init_xpms(file[i]);
+		else if (!ft_strncmp((char *)"EA", file[i], 2))
+			map->ea = init_xpms(file[i]);
+		i++;
+	}
+}
 
 int check_file(t_map *map, char **file)
 {
@@ -190,6 +214,7 @@ int check_file(t_map *map, char **file)
 		return (ft_putstr_fd((char *)"Sntx Error Map\n", 2), EXIT_FAILURE);
 	if (check_map_walls(map, file) != EXIT_SUCCESS)
 		return (ft_putstr_fd((char *)"Wall Error Map\n", 2), EXIT_FAILURE);
+	init_xpm_clr(map, file);
 	return (EXIT_SUCCESS);
 }
 
@@ -212,6 +237,17 @@ int	parse_map(t_map *map, char *file_name)
 	return (EXIT_SUCCESS);
 }
 
+void print_tmap(t_map map)
+{
+	printf("%s|\n", map.no);
+	printf("%s|\n", map.so);
+	printf("%s|\n", map.we);
+	printf("%s|\n", map.ea);
+	int i = -1;
+	while (map.map[++i])
+		printf("%s|\n", map.map[i]);
+}
+
 int main(int ac, char **av)
 {
 	t_map map;
@@ -220,7 +256,5 @@ int main(int ac, char **av)
 		return(error_args(ac));
 	if (parse_map(&map, av[1]) != EXIT_SUCCESS)
 		return (FAILDE);
-	int i = 0;
-	while (map.map[i])
-		printf("---->>>>%s|\n", map.map[i++]);
+	print_tmap(map);
 }
