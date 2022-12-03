@@ -6,7 +6,7 @@
 #    By: hameur <hameur@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/29 13:48:25 by hameur            #+#    #+#              #
-#    Updated: 2022/11/29 17:25:30 by hameur           ###   ########.fr        #
+#    Updated: 2022/12/02 18:40:51 by hameur           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRC	:=	cub3D.c \
 		cub_utils.c \
 		ft_split.c \
 		gnl.c \
+		check_map.c \
 
 OBJS	:=	$(SRC:.c=.o)
 
