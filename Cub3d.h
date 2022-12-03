@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/11/29 17:42:21 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/03 17:53:43 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define CUB3D_H
 
 #define FAILDE -1
+#define CHECK -2
 
 #include <mlx.h>
 #include <math.h>
@@ -34,12 +35,27 @@ typedef struct t_map
 	char	*ea;
 }	t_map;
 
+typedef struct t_check
+{
+	int	no;
+	int	so;
+	int	we;
+	int	ea;
+	int	map;
+	int	fl;
+	int	ce;
+}	t_check;
+
 
 
 //__________________Parsing____
 
 int		error_args(int ac);
 int		parse_map(t_map *map, char *file_name);
+int		check_map_elmnt(char	**file, t_check *check);
+int		check_map_walls(t_map *maps, char **file);
+char	**alloc_map(char **fl, int s, int i, int j);
+char	**init_map(char **file);
 
 
 
