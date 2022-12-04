@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:24:59 by hameur            #+#    #+#             */
-/*   Updated: 2022/11/29 17:20:56 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/04 19:35:44 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,4 +121,21 @@ void	ft_putstr_fd(char *s, int fd)
 		write(fd, &s[i], 1);
 		i++;
 	}
+}
+
+int	ft_atoi(char *str)
+{
+	int	x;
+	int	rst;
+
+	x = 0;
+	rst = 0;
+	while ((str[x] >= 9 && str[x] <= 13) || str[x] == 32)
+		x++;
+	while (str[x] >= 48 && str[x] <= 57 && str[x] != '\0')
+	{
+		rst = rst * 10 + (str[x] - 48);
+		x++;
+	}
+	return (rst);
 }

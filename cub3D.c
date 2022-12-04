@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/03 18:03:56 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/04 19:31:50 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,59 @@ char **init_file(char *file_name)
 	return (ft_split(temp, '\n'));
 }
 
-void check_colors(char *file, int *check)
+char	*colors(char *file, int i)
+{
+	char	*str;
+	int		x;
+
+	x = 0;
+	str = malloc(sizeof(char) * 4);
+	while (file[i] != ',' && file[i] != '\0')
+	{
+		str[x] = file[i];
+		x++;
+		i++;
+	}
+	str[x] = '\0';
+	return (str); 
+}
+
+void	get_color(char *file, int key)
+{
+	t_map	*map = NULL;
+	int		i;
+	char	*red;
+	char	*green;
+	char	*blue;
+	
+	i = 1;
+	while (file[i] != 0 && ((file[i] >= 9 && file[i] <= 13) || file[i] == ' '))
+		i++;
+	red = colors(file, i);
+	while (file[i] != ',' && file[i] != '\0')
+		i++;
+	i += 1;
+	green = colors(file, i);
+	while (file[i] != ',' && file[i] != '\0')
+		i++;
+	i += 1;
+	blue = colors(file, i);
+	printf("R : |%s| G : |%s| B : |%s|\n", red, green, blue);
+	if (key == 0)
+	{
+		map->ce->r = ft_atoi(red);
+		map->ce->g = ft_atoi(green);
+		map->ce->b = ft_atoi(blue);
+	}
+	else if (key == 1)
+	{
+		map->fl->r = ft_atoi(red);
+		map->fl->g = ft_atoi(green);
+		map->fl->b = ft_atoi(blue);
+	}
+}
+
+void check_colors(char *file, int *check, int key)
 {
 	int i = 1;
 	while (file[i] != 0 && ((file[i] >= 9 && file[i] <= 13) || file[i] == ' '))
@@ -86,7 +138,10 @@ void check_colors(char *file, int *check)
 	if (file[i] != 0)
 		*check = FAILDE;
 	else
+	{
 		*check = EXIT_SUCCESS;
+		get_color(file, key);
+	}
 }
 
 void check_xpms(char *file, int *check)
@@ -138,9 +193,9 @@ int check_rgb_and_xpms(char **file, t_check *check)
 	while (file[i] != NULL && (file[i][0] != '1' || file[i][0] !=  ' '))
 	{
 		if (!ft_strncmp((char *)"C", file[i], 1) && check->ce == CHECK)
-			check_colors(file[i], &check->ce);
+			check_colors(file[i], &check->ce, 0);
 		else if (!ft_strncmp((char *)"F", file[i], 1) && check->fl == CHECK)
-			check_colors(file[i], &check->fl);
+			check_colors(file[i], &check->fl, 1);
 		else if (!ft_strncmp((char *)"NO", file[i], 2) && check->no == CHECK)
 			check_xpms(file[i], &check->no);
 		else if (!ft_strncmp((char *)"SO", file[i], 2) && check->so == CHECK)

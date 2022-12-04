@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/03 18:05:30 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/04 16:57:10 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,8 @@ int horizontale_check(char **map)
 		while(map[i][j] != 0)
 		{
 			if (map[i][j] == ' ' && map[i + 1] != NULL && (map[i + 1][j] != ' ' && map[i + 1][j] != '1'))
+				return (EXIT_FAILURE);
+			if (map[i][j] == '0' && i == 0)
 				return (EXIT_FAILURE);
 			if (map[i][j] == '0' && (map[i + 1] == NULL || map[i + 1][j] == ' '))
 				return (EXIT_FAILURE);
