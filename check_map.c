@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/04 16:57:10 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/05 14:33:19 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	map_elements(char c)
 {
 	if (c == '1' || c == '0' || c == 'N' || c == ' ')
 		return (EXIT_SUCCESS);
-	if (c == 'S' || c == 'E' || c == 'W' || c == 'F')//f in map bonus
+	if (c == 'S' || c == 'E' || c == 'W' || c == 'F')//F in map bonus
 		return (EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }
@@ -112,9 +112,7 @@ int horizontale_check(char **map)
 		{
 			if (map[i][j] == ' ' && map[i + 1] != NULL && (map[i + 1][j] != ' ' && map[i + 1][j] != '1'))
 				return (EXIT_FAILURE);
-			if (map[i][j] == '0' && i == 0)
-				return (EXIT_FAILURE);
-			if (map[i][j] == '0' && (map[i + 1] == NULL || map[i + 1][j] == ' '))
+			if (map[i][j] == '0' && (map[i + 1] == NULL || map[i + 1][j] == ' ' || i == 0))
 				return (EXIT_FAILURE);
 			j++;
 		}
@@ -136,7 +134,7 @@ int vertical_check(char **map)
 		{
 			if (map[i][j] == ' ' && (map[i][j + 1] != ' ' && map[i][j + 1] != '1' && map[i][j + 1] != '\0'))
 				return (EXIT_FAILURE);
-			if (map[i][j] == '0' && (map[i][j + 1] == ' ' && map[i][j + 1] == '\0'))
+			if (map[i][j] == '0' && (map[i][j + 1] == ' ' || map[i][j + 1] == '\0' || j == 0))
 				return (EXIT_FAILURE);
 			j++;
 		}

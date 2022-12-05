@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/04 19:33:43 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/05 14:07:05 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,15 @@
 #include <fcntl.h>
 #include "gnl.h"
 
-typedef struct t_colors
-{
-	int	r;
-	int	g;
-	int	b;
-	int	color;
-}			t_colors;
-
 typedef struct t_map
 {
-	char		**map;
-	t_colors	*fl;
-	t_colors	*ce;
-	char		*no;
-	char		*so;
-	char		*we;
-	char		*ea;
+	char	**map;
+	int		fl;
+	int		ce;
+	char	*no;
+	char	*so;
+	char	*we;
+	char	*ea;
 }	t_map;
 
 typedef struct t_check
@@ -54,7 +46,10 @@ typedef struct t_check
 	int	ce;
 }	t_check;
 
+
+
 //__________________Parsing____
+
 int		error_args(int ac);
 int		parse_map(t_map *map, char *file_name);
 int		check_map_elmnt(char	**file, t_check *check);
@@ -62,16 +57,23 @@ int		check_map_walls(t_map *maps, char **file);
 char	**alloc_map(char **fl, int s, int i, int j);
 char	**init_map(char **file);
 
+
+
 //__________________Utils____
-int		ft_strncmp(char *s1, char *s2, int n);
-int		ft_strlen(char *str);
 int		ft_atoi(char *str);
-char	**ft_split(char *s, char c);
-char	*ft_strjoin(char *s1, char *s2);
+int		ft_strlen(char *str);
+int		ft_strncmp(char *s1, char *s2, int n);
 char	*ft_strdup(char *s1);
+char	*ft_strjoin(char *s1, char *s2);
+char	**ft_split(char *s, char c);
+void	ft_putnbr_fd(int n, int fd);
 void	ft_bzero(char *str, int size);
 void	ft_putchar_fd(char c, int fd);
-void	ft_putnbr_fd(int n, int fd);
 void	ft_putstr_fd(char *s, int fd);
+void	ft_free(char **str);
+
+
+
+
 
 #endif
