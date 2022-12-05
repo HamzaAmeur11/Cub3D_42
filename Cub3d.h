@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/03 17:53:43 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/05 14:07:05 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,19 @@ char	**init_map(char **file);
 
 
 //__________________Utils____
-int		ft_strncmp(char *s1, char *s2, int n);
+int		ft_atoi(char *str);
 int		ft_strlen(char *str);
-char	**ft_split(char *s, char c);
-char	*ft_strjoin(char *s1, char *s2);
+int		ft_strncmp(char *s1, char *s2, int n);
 char	*ft_strdup(char *s1);
+char	*ft_strjoin(char *s1, char *s2);
+char	**ft_split(char *s, char c);
+void	ft_putnbr_fd(int n, int fd);
 void	ft_bzero(char *str, int size);
 void	ft_putchar_fd(char c, int fd);
-void	ft_putnbr_fd(int n, int fd);
 void	ft_putstr_fd(char *s, int fd);
+void	ft_free(char **str);
+
+
 
 
 

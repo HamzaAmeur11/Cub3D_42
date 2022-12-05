@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:24:59 by hameur            #+#    #+#             */
-/*   Updated: 2022/11/29 17:20:56 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/05 13:47:17 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,4 +121,18 @@ void	ft_putstr_fd(char *s, int fd)
 		write(fd, &s[i], 1);
 		i++;
 	}
+}
+
+int	ft_atoi(char *str)
+{
+	int	resultat;
+	int	i;
+
+	resultat = 0;
+	i = 0;
+	while (((str[i] >= 9) && (str[i] <= 13)) || (str[i] == ' '))
+		i++;
+	while ((str[i] >= '0') && (str[i] <= '9'))
+		resultat = (resultat * 10) + (str[i++] - '0');
+	return (resultat);
 }

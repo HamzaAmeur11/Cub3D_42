@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/03 19:42:28 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/05 14:29:43 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,21 +177,56 @@ char *init_xpms(char *str)
 	return (ft_strdup(str + i));
 }
 
-// int init_colors(char *str)
-// {
-	
-// }
+int init_rgb(char *str, int *r, int *g, int *b)
+{
+	char **tmp;
+	int i;
 
-void init_xpm_clr(t_map *map, char **file)
+	i = 1;
+	while (str[i] != 0 && ((str[i] >= 9 && str[i] <= 13) || str[i] == ' '))
+		i++;
+	tmp = ft_split(str + i, ',');
+	i = 0;
+	while(tmp[i] != NULL)
+		i++;
+	if (i != 3)
+		return (FAILDE);
+	*r = ft_atoi(tmp[0]);
+	*g = ft_atoi(tmp[1]);
+	*b = ft_atoi(tmp[2]);
+	if (*r > 255 || *g > 255 || *b > 255)
+		return (FAILDE);
+	return (ft_free(tmp), EXIT_SUCCESS);
+}
+
+int init_colors(char *str)
+{
+	int	r;
+	int	g;
+	int	b;
+	int	clr;
+
+	clr = 0;
+	if (init_rgb(str, &r, &g, &b) != EXIT_SUCCESS)
+		return (FAILDE);
+	//		| 0 | R | G | B |   color integer
+    //    	+---+---+---+---+
+	clr = (r << 16) | clr;
+	clr = (g << 8) | clr;
+	clr = b | clr;
+	return (clr);
+}
+
+int init_xpm_clr(t_map *map, char **file)
 {
 	int	i = 0;
 	while (file[i] != NULL && (file[i][0] != '1' || file[i][0] !=  ' '))
 	{
-		/*if (!ft_strncmp((char *)"C", file[i], 1))
+		if (!ft_strncmp((char *)"C", file[i], 1))
 			map->ce = init_colors(file[i]);
 		else if (!ft_strncmp((char *)"F", file[i], 1))
 			map->fl = init_colors(file[i]);
-		else */if (!ft_strncmp((char *)"NO", file[i], 2))
+		else if (!ft_strncmp((char *)"NO", file[i], 2))
 			map->no = init_xpms(file[i]);
 		else if (!ft_strncmp((char *)"SO", file[i], 2))
 			map->so = init_xpms(file[i]);
@@ -201,6 +236,9 @@ void init_xpm_clr(t_map *map, char **file)
 			map->ea = init_xpms(file[i]);
 		i++;
 	}
+	if (map->ce < EXIT_SUCCESS || map->fl < EXIT_SUCCESS)
+		return(EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
 int check_file(t_map *map, char **file)
@@ -214,13 +252,11 @@ int check_file(t_map *map, char **file)
 		return (ft_putstr_fd((char *)"Sntx Error Map\n", 2), EXIT_FAILURE);
 	if (check_map_walls(map, file) != EXIT_SUCCESS)
 		return (ft_putstr_fd((char *)"Wall Error Map\n", 2), EXIT_FAILURE);
-	init_xpm_clr(map, file);
+	if (init_xpm_clr(map, file) != EXIT_SUCCESS)
+		return (ft_free(map->map), ft_putstr_fd((char *)"RGB Error\n", 2), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
-// void init_map(t_map *map, char **file)
-// {
-// }
 
 int	parse_map(t_map *map, char *file_name)
 {
@@ -239,13 +275,15 @@ int	parse_map(t_map *map, char *file_name)
 
 void print_tmap(t_map map)
 {
-	printf("%s|\n", map.no);
-	printf("%s|\n", map.so);
-	printf("%s|\n", map.we);
-	printf("%s|\n", map.ea);
+	printf("fl = %d|\n", map.fl);
+	printf("ce = %d|\n", map.ce);
+	printf("no = %s|\n", map.no);
+	printf("so = %s|\n", map.so);
+	printf("we = %s|\n", map.we);
+	printf("ea = %s|\n", map.ea);
 	int i = -1;
 	while (map.map[++i])
-		printf("%s|\n", map.map[i]);
+		printf("-%s|\n", map.map[i]);
 }
 
 int main(int ac, char **av)
