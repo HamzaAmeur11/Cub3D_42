@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/05 14:07:05 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/06 23:46:28 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ typedef struct t_map
 	char	**map;
 	int		fl;
 	int		ce;
+	int		height;
+	int		width;
+	int		bits_per_pixel;//
+	int		line_length;//
+	int		endian;//
+	void	*addr;//
 	char	*no;
 	char	*so;
 	char	*we;

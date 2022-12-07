@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/05 14:29:43 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/07 01:42:01 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,6 +277,8 @@ void print_tmap(t_map map)
 {
 	printf("fl = %d|\n", map.fl);
 	printf("ce = %d|\n", map.ce);
+	printf("height = %d|\n", map.height);
+	printf("width = %d|\n", map.width);
 	printf("no = %s|\n", map.no);
 	printf("so = %s|\n", map.so);
 	printf("we = %s|\n", map.we);
@@ -286,13 +288,84 @@ void print_tmap(t_map map)
 		printf("-%s|\n", map.map[i]);
 }
 
+void	ft_resulotion(t_map *map)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while(map->map[i] != NULL)
+		i++;
+	map->height = i;
+	while(map->map[i - 1][j] != '\0')
+		j++;
+	map->width = j;
+}
+
+void	my_mlx_pixel_put(t_map *data, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	*(unsigned int*)dst = color;
+}
+
+void	draw_car(t_map map, int x, int y, int color)
+{
+	int	i;
+	int	j;
+	int	pos;
+
+	i = y + 1;
+	while(i < y + 64)
+	{
+		j = x + 1;
+		while (j < x + 64)
+		{
+			my_mlx_pixel_put(&map, j, i, color);
+			j++;
+		}
+		i++;
+	}
+}
+
 int main(int ac, char **av)
 {
-	t_map map;
+	t_map 	map;
+	void	*mlx;
+	void	*wind;
+	void	*img;
+	int		i;
+	int		j;
 	
 	if (ac != 2)
 		return(error_args(ac));
 	if (parse_map(&map, av[1]) != EXIT_SUCCESS)
 		return (FAILDE);
-	print_tmap(map);
+	i = 0;
+	ft_resulotion(&map);
+	mlx = mlx_init();
+	wind = mlx_new_window(mlx, map.width * 64, map.height * 64, "Cub3D_42");
+	img = mlx_new_image(mlx, map.width, map.height);
+	map.addr = mlx_get_data_addr(img, &map.bits_per_pixel, &map.line_length, &map.endian);
+	while (map.map[i] != NULL)
+	{
+		j = 0;
+		while (map.map[i][j] != 0)
+		{
+			if (map.map[i][j] == '1')
+				draw_car(map, j, i, 0x00FF0000);
+			if (map.map[i][j] == '0')
+				draw_car(map, j, i, 0x000000FF);
+			// if (map.map[i][j + 1] == '\0')
+			// 	printf("\n");
+			j++;
+		}
+		i++;
+	}
+	// my_mlx_pixel_put(&map, 32 * 2, 32 * 2, 0x00FF0000);
+	mlx_put_image_to_window(mlx, wind, img, 0, 0);
+	// print_tmap(map);
+	mlx_loop(mlx);
 }

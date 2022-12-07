@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hameur <hameur@student.42.fr>              +#+  +:+       +#+         #
+#    By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/29 13:48:25 by hameur            #+#    #+#              #
-#    Updated: 2022/12/02 18:40:51 by hameur           ###   ########.fr        #
+#    Updated: 2022/12/06 02:03:34 by megrisse         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ HEADER	:=	Cub3d.h
 
 CC	:=	gcc
 
-CFLAGS	:=	-Wall -Wextra -Werror
+CFLAGS	:=	-W -W -W -lmlx -O3 -framework OpenGL -framework AppKit
 
 SRC	:=	cub3D.c \
 		cub_utils.c \
