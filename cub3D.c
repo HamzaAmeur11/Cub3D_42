@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/05 14:29:43 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/07 18:49:00 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,7 @@ int check_file(t_map *map, char **file)
 	init_check(&check);
 	if (check_rgb_and_xpms(file, &check) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
-	if (check_map_elmnt(file, &check) != EXIT_SUCCESS)
+	if (check_map_elmnt(file, map, &check) != EXIT_SUCCESS)
 		return (ft_putstr_fd((char *)"Sntx Error Map\n", 2), EXIT_FAILURE);
 	if (check_map_walls(map, file) != EXIT_SUCCESS)
 		return (ft_putstr_fd((char *)"Wall Error Map\n", 2), EXIT_FAILURE);
@@ -275,6 +275,7 @@ int	parse_map(t_map *map, char *file_name)
 
 void print_tmap(t_map map)
 {
+	printf("width = %d && h = %d && x = %f && y = %f& drt =%d\n", map.width, map.height, map.plr.x, map.plr.y, map.plr.drc);
 	printf("fl = %d|\n", map.fl);
 	printf("ce = %d|\n", map.ce);
 	printf("no = %s|\n", map.no);
@@ -286,6 +287,21 @@ void print_tmap(t_map map)
 		printf("-%s|\n", map.map[i]);
 }
 
+void	ft_resulotion(t_map *map)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while(map->map[i] != NULL)
+		i++;
+	map->height = i;
+	while(map->map[i - 1][j] != '\0')
+		j++;
+	map->width = j;
+}
+
 int main(int ac, char **av)
 {
 	t_map map;
@@ -294,5 +310,6 @@ int main(int ac, char **av)
 		return(error_args(ac));
 	if (parse_map(&map, av[1]) != EXIT_SUCCESS)
 		return (FAILDE);
+	ft_resulotion(&map);
 	print_tmap(map);
 }

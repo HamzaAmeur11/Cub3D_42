@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/05 14:33:19 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/07 19:01:10 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,34 @@ void ft_free(char **str)
 	free(str);
 }
 
-int	map_elements(char c)
+void init_pos(t_plr *plr, int x, int y, char c)
 {
-	if (c == '1' || c == '0' || c == 'N' || c == ' ')
+	plr->x = x - 0.5;
+	plr->y = y - 0.5;
+	printf("plr->x = %f && plr->y = %f && drc = %c\n", plr->x, plr->y, c);
+	if (c == 'N')
+		plr->drc = NORTH;
+	else if (c == 'W')
+		plr->drc = WEST;
+	else if (c == 'E')
+		plr->drc = EAST;
+	else
+		plr->drc = SOUTH;
+	printf("plr->x = %f && plr->y = %f && drc = %d\n", plr->x, plr->y, plr->drc);
+}
+
+int	map_elements(t_map *map, char c, int x, int y)
+{
+	static int i;
+	
+	if (c == '1' || c == '0'  || c == ' ')
 		return (EXIT_SUCCESS);
-	if (c == 'S' || c == 'E' || c == 'W' || c == 'F')//F in map bonus
-		return (EXIT_SUCCESS);
+	if ((c == 'S' || c == 'E' || c == 'W' || c == 'N') && i == 0)//F in map bonus
+		return (init_pos(&map->plr, x, y, c), i++, EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }
 
-int	check_map_elmnt(char **file, t_check *check)
+int	check_map_elmnt(char **file, t_map *map, t_check *check)
 {
 	int	i;
 	int	j;
@@ -44,8 +62,8 @@ int	check_map_elmnt(char **file, t_check *check)
 		j = 0;
 		while (file[i][j])
 		{
-			if (map_elements(file[i][j]) == EXIT_FAILURE)
-				return (check->map = FAILDE, EXIT_FAILURE);
+			if (map_elements(map, file[i][j], j, i) == EXIT_FAILURE)
+				return (check->map = FAILDE, ft_putstr_fd((char *)"Char incorr!!!\n", 2), EXIT_FAILURE);
 			j++;
 		}
 		i++;

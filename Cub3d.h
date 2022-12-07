@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/05 14:07:05 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/07 18:46:30 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@
 #define FAILDE -1
 #define CHECK -2
 
+#define NORTH 10
+#define SOUTH 11
+#define WEST 12
+#define EAST 13
+
 #include <mlx.h>
 #include <math.h>
 #include <unistd.h>
@@ -24,11 +29,21 @@
 #include <fcntl.h>
 #include "gnl.h"
 
+typedef struct t_plr
+{
+	float x;
+	float y;
+	int drc;
+}	t_plr;
+
 typedef struct t_map
 {
 	char	**map;
+	t_plr	plr;
 	int		fl;
 	int		ce;
+	int		height;
+	int		width;
 	char	*no;
 	char	*so;
 	char	*we;
@@ -52,7 +67,7 @@ typedef struct t_check
 
 int		error_args(int ac);
 int		parse_map(t_map *map, char *file_name);
-int		check_map_elmnt(char	**file, t_check *check);
+int		check_map_elmnt(char	**file, t_map *map, t_check *check);
 int		check_map_walls(t_map *maps, char **file);
 char	**alloc_map(char **fl, int s, int i, int j);
 char	**init_map(char **file);
