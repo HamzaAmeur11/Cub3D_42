@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/07 19:01:10 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/08 20:35:50 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void ft_free(char **str)
 
 void init_pos(t_plr *plr, int x, int y, char c)
 {
-	plr->x = x - 0.5;
-	plr->y = y - 0.5;
+	plr->x = x + 0.5;
+	plr->y = y + 0.5;
 	printf("plr->x = %f && plr->y = %f && drc = %c\n", plr->x, plr->y, c);
 	if (c == 'N')
 		plr->drc = NORTH;
@@ -38,18 +38,18 @@ void init_pos(t_plr *plr, int x, int y, char c)
 	printf("plr->x = %f && plr->y = %f && drc = %d\n", plr->x, plr->y, plr->drc);
 }
 
-int	map_elements(t_map *map, char c, int x, int y)
+int	map_elements(char c)
 {
 	static int i;
 	
 	if (c == '1' || c == '0'  || c == ' ')
 		return (EXIT_SUCCESS);
 	if ((c == 'S' || c == 'E' || c == 'W' || c == 'N') && i == 0)//F in map bonus
-		return (init_pos(&map->plr, x, y, c), i++, EXIT_SUCCESS);
+		return (i++, EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }
 
-int	check_map_elmnt(char **file, t_map *map, t_check *check)
+int	check_map_elmnt(char **file, t_check *check)
 {
 	int	i;
 	int	j;
@@ -62,7 +62,7 @@ int	check_map_elmnt(char **file, t_map *map, t_check *check)
 		j = 0;
 		while (file[i][j])
 		{
-			if (map_elements(map, file[i][j], j, i) == EXIT_FAILURE)
+			if (map_elements(file[i][j]) == EXIT_FAILURE)
 				return (check->map = FAILDE, ft_putstr_fd((char *)"Char incorr!!!\n", 2), EXIT_FAILURE);
 			j++;
 		}
@@ -161,6 +161,23 @@ int vertical_check(char **map)
 	return (EXIT_SUCCESS);
 }
 
+void init_player_pos(t_map *map)
+{
+	int i = 0, j = 0;
+	while (map->map[i] != NULL)
+	{
+		j = 0;
+		printf("%s\n", map->map[i]);
+		while (map->map[i][j] != 0)
+		{
+			if (is_upper_char(map->map[i][j]) == EXIT_SUCCESS)
+				init_pos(&map->plr, j, i, map->map[i][j]);
+			j++;
+		}
+		i++;
+	}
+}
+
 int	check_map_walls(t_map *maps, char **file)
 {
 	char **map;
@@ -171,5 +188,7 @@ int	check_map_walls(t_map *maps, char **file)
 		return (ft_free(map), EXIT_FAILURE);
 	if (horizontale_check(map) != EXIT_SUCCESS)//  |||
 		return (ft_free(map), EXIT_FAILURE);
-	return (maps->map = map, EXIT_SUCCESS);
+	maps->map = map;
+	init_player_pos(maps);
+	return (EXIT_SUCCESS);
 }
