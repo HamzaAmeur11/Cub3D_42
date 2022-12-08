@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/07 01:42:01 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/08 20:10:39 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,13 +315,13 @@ void	draw_car(t_map map, int x, int y, int color)
 {
 	int	i;
 	int	j;
-	int	pos;
+	// int	pos;
 
 	i = y + 1;
-	while(i < y + 64)
+	while(i < y + 8)
 	{
 		j = x + 1;
-		while (j < x + 64)
+		while (j < x + 8)
 		{
 			my_mlx_pixel_put(&map, j, i, color);
 			j++;
@@ -344,28 +344,31 @@ int main(int ac, char **av)
 	if (parse_map(&map, av[1]) != EXIT_SUCCESS)
 		return (FAILDE);
 	i = 0;
+	int	y = 0;
+	int x;
 	ft_resulotion(&map);
 	mlx = mlx_init();
-	wind = mlx_new_window(mlx, map.width * 64, map.height * 64, "Cub3D_42");
-	img = mlx_new_image(mlx, map.width, map.height);
+	wind = mlx_new_window(mlx, map.width * 32, map.height * 32, "Cub3D_42");
+	img = mlx_new_image(mlx, map.width * 32, map.height * 32);
 	map.addr = mlx_get_data_addr(img, &map.bits_per_pixel, &map.line_length, &map.endian);
-	while (map.map[i] != NULL)
+	while (map.map[y] != NULL/*i < ((map.height * 64) / 7)*/)
 	{
-		j = 0;
-		while (map.map[i][j] != 0)
+		x = 0;
+		while (map.map[y][x] != '\0'/*j < (map.width * 64) / 7*/)
 		{
-			if (map.map[i][j] == '1')
-				draw_car(map, j, i, 0x00FF0000);
-			if (map.map[i][j] == '0')
-				draw_car(map, j, i, 0x000000FF);
-			// if (map.map[i][j + 1] == '\0')
-			// 	printf("\n");
-			j++;
+			i = y;
+			j = x;
+			if (map.map[y][x] == '1')
+				draw_car(map, j * 8, i * 8, 0x808080);
+			else if (map.map[y][x] == '0')
+				draw_car(map, j * 8, i * 8, 0xFFFFFF);
+			else if (map.map[y][x] == 'N')
+				draw_car(map, j * 8, i * 8, 0xFF0000);
+			x++;
 		}
-		i++;
+		y++;
 	}
-	// my_mlx_pixel_put(&map, 32 * 2, 32 * 2, 0x00FF0000);
 	mlx_put_image_to_window(mlx, wind, img, 0, 0);
-	// print_tmap(map);
+	print_tmap(map);
 	mlx_loop(mlx);
 }
