@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 19:04:13 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/08 20:32:36 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/09 11:37:19 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,7 +275,7 @@ int	parse_map(t_map *map, char *file_name)
 
 void print_tmap(t_map map)
 {
-	printf("width = %d && h = %d && x = %f && y = %f& drt =%d\n", map.width, map.height, map.plr.x, map.plr.y, map.plr.drc);
+	printf("width = %d && h = %d && x = %f && y = %f& drt =%f\n", map.width, map.height, map.plr.x, map.plr.y, map.plr.alpha);
 	printf("fl = %d|\n", map.fl);
 	printf("ce = %d|\n", map.ce);
 	printf("no = %s|\n", map.no);

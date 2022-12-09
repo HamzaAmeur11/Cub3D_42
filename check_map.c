@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/08 20:35:50 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/09 12:02:05 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,19 @@ void init_pos(t_plr *plr, int x, int y, char c)
 {
 	plr->x = x + 0.5;
 	plr->y = y + 0.5;
-	printf("plr->x = %f && plr->y = %f && drc = %c\n", plr->x, plr->y, c);
+	plr->turn = 0;
+	plr->walk = 0;
+	plr->mov_speed = 0.1;
+	plr->rot_speed = 2 * (M_PI / 180);
 	if (c == 'N')
-		plr->drc = NORTH;
+		plr->alpha = M_PI / 2;
 	else if (c == 'W')
-		plr->drc = WEST;
+		plr->alpha = M_PI;
 	else if (c == 'E')
-		plr->drc = EAST;
+		plr->alpha = 0;
 	else
-		plr->drc = SOUTH;
-	printf("plr->x = %f && plr->y = %f && drc = %d\n", plr->x, plr->y, plr->drc);
+		plr->alpha = 3  * M_PI / 2;
+	
 }
 
 int	map_elements(char c)
