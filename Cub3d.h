@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/09 13:21:00 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/12 18:11:44 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 #define WEST 12
 #define EAST 13
 
-#define UP_KEY 13
-#define LEFT_KEY 0
-#define RIGHT_KEY 2
-#define DOWN_KEY 1
+#define LEFT_KEY 123
+#define RIGHT_KEY 124
+#define DOWN_KEY 125
+#define UP_KEY 126
 #define ESC_KEY 53
 
 #define TILE_SIZE 32
@@ -38,13 +38,20 @@
 #include <stdbool.h>
 #include "gnl.h"
 
+typedef struct t_point
+{
+	float x;
+	float y;
+}	t_point;
+
 typedef struct t_plr
 {
 	float x;
 	float y;
 	float alpha;
-	int turn;  // -1 if left && +1 if right
-	int walk;	// -1 if back && +1 if fronte
+	float beta;
+	int 	turn;  // -1 if left && +1 if right
+	int 	walk;	// -1 if back && +1 if fronte
 	float mov_speed;
 	float rot_speed;
 }	t_plr;
@@ -108,8 +115,12 @@ char **init_file(char *file_name);
 int	check_extens(char *str);
 int	error_args(int ac);
 int is_upper_char(char c);
-void put_line(t_map *map);
+void put_line(t_map *map, t_point n, t_point m);
 
+void send_rays(t_map *map);
+
+float rad_to_deg(float rad);
+float deg_to_rad(float deg);
 
 
 
