@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/12 22:29:23 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/13 22:09:05 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ bool is_player(t_map *map, float i, float j)
 	float px;
 	float py;
 	
-	px = map->plr.x;
-	py = map->plr.y;
+	px = map->plr.x / 32;
+	py = map->plr.y / 32;
 	x = i / 32;
 	y = j / 32;
 	return ((x-px)*(x-px) + (y-py)*(y-py) <= 0.16 * 0.16);
@@ -63,9 +63,9 @@ int is_upper_char(char c)
 void put_char(t_map *map, char c, int i, int j)
 {
 	if (c == '0' || is_upper_char(c) == EXIT_SUCCESS)
-		put_square(map, i * 32, j * 32, 0x0000FF);
+		put_square(map, i * TILE_SIZE, j * TILE_SIZE, 0x0000FF);
 	else if (c == ' ' || c == '1')
-		put_square(map, i * 32, j * 32, 0x00FF00);
+		put_square(map, i * TILE_SIZE, j * TILE_SIZE, 0x00FF00);
 }
 
 void put_wall(t_map *map)
@@ -132,6 +132,7 @@ void put_line(t_map *map, t_point n, t_point m)
 {
 	//find the point of interaction with the wall M(x_1 , y_1)
 	printf("mx = %f && my = %f\n", m.x, m.y);
+	printf("nx = %f && ny = %f\n", n.x, n.y);
 	float dx = m.x - n.x;
 	float dy = m.y - n.y;
 	int i = -1;
@@ -145,10 +146,10 @@ void put_line(t_map *map, t_point n, t_point m)
 	float x_inc = (float)dx / (float)steps;
 	float y_inc = (float)dy / (float)steps;
 	printf("x_inc : %f && y_inc = %f\n", x_inc, y_inc);
-		printf("first x = %d && y = %d\n", check_v(x) / 32, check_v(y) / 32);
-	while (++i < steps * TILE_SIZE)
+		printf("first x = %f && y = %f\n", x,y);
+	while (++i < steps * TILE_SIZE && (x != m.x || x_inc == 0) && (y != m.y || y_inc == 0))
 	{
-		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, check_v(x), check_v(y), 0xFF0F0F);
+		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, x, y, 0xFF0F0F);
 		x += x_inc;
 		y += y_inc;
 	}
@@ -180,6 +181,7 @@ int	moves(int keycode, t_map *map)
 	{
 		map->plr.beta += map->plr.turn * map->plr.rot_speed * 2;
 		map->plr.alpha = rad_to_deg(map->plr.beta);
+		printf("alpha = %f\n", map->plr.alpha);
 	}
 	if (map->plr.turn != 0)
 	{
@@ -210,24 +212,33 @@ void horiz_inter(t_map *map, t_point *p)
 	t_point f;
 	long x_stp;
 	long y_stp;
-	// int i = (int)map->plr.y;
-	// int j = (int)map->plr.x;
-	
-	f.y = (int)map->plr.y * TILE_SIZE;
-	// f.x = (map->plr.x + (map->plr.y - f.y) / tan(map->plr.beta)) / 32;
-	f.x = (val_abs(f.y - map->plr.y) / sin(map->plr.beta)) * cos(map->plr.beta);
-	printf("alpha ============= %f\n", f.x);
+
+	//p twsal *32
+	printf("px = %f && py = %f       X = %i Y = %i\n", map->plr.x, map->plr.y, (int)map->plr.x / 32, (int)map->plr.y / 32);
+	f.y = (int)(map->plr.y / 32) * 32;//*n
+	f.x = map->plr.x + ((map->plr.y - f.y) / tan(map->plr.beta));//*n
+	if (map->plr.alpha == 90 || map->plr.alpha == 270)
+		f.x = map->plr.x;
+	printf("fx = %f && i = %d\n", f.x, (int)f.x / 32);
+	printf("fy = %f && j = %d\n", f.y, (int)f.y / 32);
 	y_stp = TILE_SIZE;
-	x_stp = TILE_SIZE * tan(map->plr.beta);
+	x_stp = y_stp / tan(map->plr.beta);
+	if (map->plr.alpha == 90 || map->plr.alpha == 270)
+		x_stp = 0;
+	printf("x_stp = %ld && y_stp = %ld\n", x_stp, y_stp);
 	while (1)
 	{
-		printf("x = %d====%c==== y = %d\n",(int)(f.x / 32),  map->map[(int)(f.y / 32)][(int)(f.x / 32)], (int)(f.y / 32));
-		printf("f.x = %f && f.y == %f && x_stp %ld y_stp = %ld\n", (f.x / 32), (f.y / 32) ,x_stp ,y_stp);
-		if (map->map[(int)(f.y / 32)][(int)(f.y / 32)] == '1')
-			{p->x = f.x;	p->y = f.y;	break;}
-		f.x += x_stp;
-		f.y = y_stp;
+		
+		printf("char[%d][%d]\n",(int)f.y / 32,(int)f.x / 32);
+		if (map->map[(int)f.y / 32][(int)f.x / 32] == '1')
+			break ;
+		f.x += x_stp; 
+		f.y += y_stp; 
 	}
+	p->x = f.x;
+	p->y = f.y;
+	printf("end x = %f && i = %d\n", f.x, (int)f.x / 32);
+	printf("end y = %f && j = %d\n", f.y, (int)f.y / 32);
 }
 
 void interaction_pt(t_map *map, t_point *p)
@@ -236,46 +247,45 @@ void interaction_pt(t_map *map, t_point *p)
 	// t_point inter_v;
 	horiz_inter(map, &inter_h);
 	// vertic_inter(map, &inter_v);
-	p->x = val_abs(inter_h.x / 32);
+	p->x = inter_h.x;
 	p->y = inter_h.y;
-	printf("point inter : x ; %f y ; %f\n", p->x, p->y);
 }
 
 void send_rays(t_map *map)
 {
 	t_point m,n;
-	m.x = map->plr.x * 32;
-	m.y = map->plr.y * 32;
-	n.x = 0;
-	n.y = 0;
-	if (map->plr.alpha == 0)
-	{
-		printf("map---------1\n");
-		n.x = map->width * 32;
-		n.y = map->plr.y * 32;			
-	}
-	else if (map->plr.alpha == 180)
-	{
-		printf("map---------2\n");
-		n.x = 0;
-		n.y = map->plr.y * 32;
-	}
-	else if (map->plr.alpha == 90)
-	{
-		printf("map---------3\n");
-		n.x = map->plr.x * 32;
-		n.y = 0;
-	}
-	else if (map->plr.alpha == 270)
-	{
-		printf("map---------4\n");
-		n.x = map->plr.x * 32;
-		n.y = map->height * 32;
-	}
-	else{
-	interaction_pt(map, &n);
-	}
+	m.x = map->plr.x;
+	m.y = map->plr.y;
+	// n.y = 33;
+	// n.x = 48;
+	// if (map->plr.alpha == 0)
+	// {
+	// 	printf("map---------1\n");
+	// 	n.x = map->width * 32;
+	// 	n.y = map->plr.y * 32;			
+	// }
+	// else if (map->plr.alpha == 180)
+	// {
+	// 	printf("map---------2\n");
+	// 	n.x = 0;
+	// 	n.y = map->plr.y * 32;
+	// }
+	// else if (map->plr.alpha == 90)
+	// {
+	// 	printf("map---------3\n");
+	// 	n.x = map->plr.x * 32;
+	// 	n.y = 0;
+	// }
+	// else if (map->plr.alpha == 270)
+	// {
+	// 	printf("map---------4\n");
+	// 	n.x = map->plr.x * 32;
+	// 	n.y = map->height * 32;
+	// }
+	// else
+		interaction_pt(map, &n);
 	
+	// printf("point inter : x ; %f y ; %f\n", n.x, n.y);
 	put_line(map, m, n);
 }
 
@@ -298,7 +308,7 @@ int main(int ac, char **av)
 	if (parse_map(&map, av[1]) != EXIT_SUCCESS)
 		return (FAILDE);
 	ft_resulotion(&map);
-	print_tmap(map);
+	// print_tmap(map);
 	if (put_2d_map(&map) != EXIT_SUCCESS)
 		return (FAILDE);
 }

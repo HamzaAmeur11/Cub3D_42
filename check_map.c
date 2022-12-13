@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/11 21:34:25 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/13 21:22:02 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void ft_free(char **str)
 
 void init_pos(t_plr *plr, int x, int y, char c)
 {
-	plr->x = x + 0.5;
-	plr->y = y + 0.5;
+	plr->x = (x + 0.5) * TILE_SIZE;
+	plr->y = (y + 0.5) * TILE_SIZE;
 	plr->turn = 0;
 	plr->walk = 0;
 	plr->mov_speed = 0.1;
@@ -170,7 +170,6 @@ void init_player_pos(t_map *map)
 	while (map->map[i] != NULL)
 	{
 		j = 0;
-		printf("%s\n", map->map[i]);
 		while (map->map[i][j] != 0)
 		{
 			if (is_upper_char(map->map[i][j]) == EXIT_SUCCESS)
