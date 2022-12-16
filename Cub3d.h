@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/12 18:11:44 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/16 18:16:55 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 #define UP_KEY 126
 #define ESC_KEY 53
 
-#define TILE_SIZE 32
+#define TILE_SIZE 64
 
 #include <mlx.h>
 #include <math.h>
@@ -37,6 +37,14 @@
 #include <fcntl.h>
 #include <stdbool.h>
 #include "gnl.h"
+
+typedef struct t_bool
+{
+	bool up;
+	bool down;
+	bool left;
+	bool right;
+}	t_bool;
 
 typedef struct t_point
 {
@@ -121,9 +129,14 @@ void send_rays(t_map *map);
 
 float rad_to_deg(float rad);
 float deg_to_rad(float deg);
+void init_direction(t_bool *dir, float beta);
+void vertic_inter(t_map *map, t_point *p);
+void init_stps(t_map *map, t_bool *dirction, long *x_stp, long *y_stp);
+void horiz_inter(t_map *map, t_point *p);
+void put_line(t_map *map, t_point n, t_point m);
 
 
-
+void init_stps(t_map *map, t_bool *dirction, long *x_stp, long *y_stp);
 
 //__________________Utils____
 int		ft_atoi(char *str);

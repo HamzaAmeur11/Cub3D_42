@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/13 21:22:02 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/15 22:37:53 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,15 @@ void init_pos(t_plr *plr, int x, int y, char c)
 	plr->turn = 0;
 	plr->walk = 0;
 	plr->mov_speed = 0.1;
-	plr->rot_speed = 2 * (M_PI / 180);
+	plr->rot_speed = (2 * M_PI) / 180;
 	if (c == 'N')
-		plr->alpha = 90, plr->beta = M_PI / 2;
+		plr->alpha = 270, plr->beta = (3 * M_PI) / 2;
 	else if (c == 'W')
 		plr->alpha = 180, plr->beta = M_PI;
 	else if (c == 'E')
 		plr->alpha = 0, plr->beta = 0;
-	else
-		plr->alpha = 270, plr->beta = (3 * M_PI) / 2;
+	else if (c == 'S')
+		plr->alpha = 90, plr->beta = M_PI / 2;
 	
 }
 
