@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/16 18:16:55 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/17 22:38:40 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 #define UP_KEY 126
 #define ESC_KEY 53
 
-#define TILE_SIZE 64
+#define TILE_SIZE 16
 
 #include <mlx.h>
 #include <math.h>

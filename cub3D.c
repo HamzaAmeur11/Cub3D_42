@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/16 21:32:50 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/17 22:37:50 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ float normalize_angle(float angle)
 
 int	moves(int keycode, t_map *map)
 {
-	printf("\n\n-------------------------str\n");
+	// printf("\n\n-------------------------str\n");
 	if (keycode == UP_KEY)
 		map->plr.walk = +1;
 	else if (keycode == DOWN_KEY)
@@ -118,11 +118,11 @@ int	moves(int keycode, t_map *map)
 		// printf("beta -  0 < %f < %f\n", map->plr.beta, 2 * M_PI);
 		// map->plr.beta = normalize_angle(map->plr.beta);
 		// map->plr.alpha = rad_to_deg(map->plr.beta);
-		printf("before alpha = %f\n", map->plr.alpha);
-		map->plr.alpha = normalize_angle(map->plr.alpha + (map->plr.turn * 4));
-		printf("after alpha = %f\n", map->plr.alpha);
+		// printf("before alpha = %f\n", map->plr.alpha);
+		map->plr.alpha = normalize_angle(map->plr.alpha + (map->plr.turn * 2));
+		// printf("after alpha = %f\n", map->plr.alpha);
 		map->plr.beta = deg_to_rad(map->plr.alpha);
-		printf("beta + 0 < %f < %f\n", map->plr.beta, 2 * M_PI);
+		// printf("beta + 0 < %f < %f\n", map->plr.beta, 2 * M_PI);
 		
 	}
 	//   edit x and y     //
@@ -132,7 +132,7 @@ int	moves(int keycode, t_map *map)
 	send_rays(map);
 	map->plr.turn = 0;
 	map->plr.walk = 0;
-	printf("-------------------------end\n");
+	// printf("-------------------------end\n");
 	return (EXIT_SUCCESS);
 }
 
@@ -160,14 +160,17 @@ void interaction_pt(t_map *map, t_point *p)
 	t_point inter_v;
 	horiz_inter(map, &inter_h);
 	vertic_inter(map, &inter_v);
-	if (inter_h.x == -1 && inter_h.y == -1)
-		{*p = inter_v;	return;}
-	if (inter_v.x == -1 && inter_v.y == -1)
-		{*p = inter_h;	return;}
+	// printf("dis vert %f\n", distence(plr, inter_v));
+	// printf("dis hor %f\n", distence(plr, inter_h));
+	// if (inter_h.x == -1 && inter_h.y == -1)
+	// 	{*p = inter_v;	return;}
+	// if (inter_v.x == -1 && inter_v.y == -1)
+	// 	{*p = inter_h;	return;}
+		
 	if (distence(plr, inter_h) > distence(plr, inter_v))
-		{*p = inter_v;printf("ppppppp %f\n", distence(plr, inter_v));}
+		{*p = inter_v;}
 	else
-		{*p = inter_h;printf("hhhhhhhhhhhh  %f\n", distence(plr, inter_h));}
+		{*p = inter_h;}
 			
 }
 
