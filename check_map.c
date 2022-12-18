@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/05 14:33:19 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/18 14:42:34 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ void ft_free(char **str)
 {
 	int i;
 
-	i = -1;
-	while(str[++i])
-		free(str[i]);
+	i = 0;
+	while(str[i] != NULL)
+		free(str[i++]);
 	free(str);
 }
 
@@ -143,6 +143,41 @@ int vertical_check(char **map)
 	return (EXIT_SUCCESS);
 }
 
+void init_pos(t_plr *plr, int x, int y, char c)
+{
+	plr->x = x;
+	plr->y = y;
+	printf("init  x ==> %f y ==> %f\n", plr->x, plr->y);
+	plr->turn = 0;
+	plr->walk = 0;
+	plr->mov_speed = 0.1;
+	plr->rot_speed = 2 * (M_PI / 180);
+	if (c == 'N')
+		plr->alpha = M_PI / 2;
+	else if (c == 'W')
+		plr->alpha = M_PI;
+	else if (c == 'E')
+		plr->alpha = 0;
+	else
+		plr->alpha = 3  * M_PI / 2;
+}
+
+void init_player_pos(t_map *map)
+{
+	int i = 0, j = 0;
+	while (map->map[i] != NULL)
+	{
+		j = 0;
+		while (map->map[i][j] != 0)
+		{
+			if (map->map[i][j] == 'N' || map->map[i][j] == 'W' || map->map[i][j] == 'S' || map->map[i][j] == 'E')
+				init_pos(&map->plr, j, i, map->map[i][j]);
+			j++;
+		}
+		i++;
+	}
+}
+
 int	check_map_walls(t_map *maps, char **file)
 {
 	char **map;
@@ -153,5 +188,7 @@ int	check_map_walls(t_map *maps, char **file)
 		return (ft_free(map), EXIT_FAILURE);
 	if (horizontale_check(map) != EXIT_SUCCESS)//  |||
 		return (ft_free(map), EXIT_FAILURE);
-	return (maps->map = map, EXIT_SUCCESS);
+	maps->map = map;
+	init_player_pos(maps);
+	return (EXIT_SUCCESS);
 }
