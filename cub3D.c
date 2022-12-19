@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/18 14:48:36 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/19 12:56:17 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -512,7 +512,7 @@ void	game_time(t_map *map)
 {
 	// printf("x == %f y == %f\n", map->plr.x, map->plr.y);
 	if (step_to_wall(map, map->plr) == EXIT_SUCCESS)
-	move_player(map, map->plr.x, map->plr.y);
+		move_player(map, map->plr.x, map->plr.y);
 }
 
 int	game(t_map *map)
