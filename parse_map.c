@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 19:04:13 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/17 22:32:56 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/18 22:18:33 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,10 +295,7 @@ void	ft_resulotion(t_map *map)
 	i = 0;
 	j = 0;
 	while(map->map[i] != NULL)
-	{
-		// printf("map[%d] = %s\n", i, map->map[i]);
 		i++;
-	}
 	map->height = i;
 	while(map->map[i - 1][j] != '\0')
 		j++;

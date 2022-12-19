@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/17 22:37:50 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/19 12:54:20 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,10 @@ void put_char(t_map *map, char c, int i, int j)
 {
 	if (c == '0' || is_upper_char(c) == EXIT_SUCCESS)
 		put_square(map, i * TILE_SIZE, j * TILE_SIZE, 0x0000FF);
-	else if (c == ' ' || c == '1')
+	else if (c == '1')
 		put_square(map, i * TILE_SIZE, j * TILE_SIZE, 0x00FF00);
+	else if (c == ' ')
+		put_square(map, i * TILE_SIZE, j * TILE_SIZE, 0x0FFFF0);
 }
 
 void put_wall(t_map *map)
@@ -91,14 +93,14 @@ float normalize_angle(float angle)
 {
 	if (angle < 0)
 		angle = 360 + angle;
-	if (angle > 360)
+	if (angle >= 360)
 		angle = angle - 360;
 	return (angle);
 }
 
 int	moves(int keycode, t_map *map)
 {
-	// printf("\n\n-------------------------str\n");
+	printf("\n\n-------------------------str\n");
 	if (keycode == UP_KEY)
 		map->plr.walk = +1;
 	else if (keycode == DOWN_KEY)
@@ -114,19 +116,16 @@ int	moves(int keycode, t_map *map)
 	//update data
 	if (map->plr.turn != 0)
 	{
-		// map->plr.beta += (map->plr.turn * map->plr.rot_speed);
-		// printf("beta -  0 < %f < %f\n", map->plr.beta, 2 * M_PI);
-		// map->plr.beta = normalize_angle(map->plr.beta);
-		// map->plr.alpha = rad_to_deg(map->plr.beta);
-		// printf("before alpha = %f\n", map->plr.alpha);
-		map->plr.alpha = normalize_angle(map->plr.alpha + (map->plr.turn * 2));
-		// printf("after alpha = %f\n", map->plr.alpha);
+		printf("before alpha = %f\n", map->plr.alpha);
+		map->plr.alpha = normalize_angle(map->plr.alpha + (map->plr.turn * VAR));
+		printf("after alpha = %f\n", map->plr.alpha);
 		map->plr.beta = deg_to_rad(map->plr.alpha);
-		// printf("beta + 0 < %f < %f\n", map->plr.beta, 2 * M_PI);
+		printf("beta + 0 < %f < %f\n", map->plr.beta, 2 * M_PI);
 		
 	}
 	//   edit x and y     //
-	//if (map->plr.walk != 0)
+	if (map->plr.walk != 0)
+		edit_pos(map);
 	mlx_clear_window(map->mlx_.mlx_ptr, map->mlx_.win_ptr);
 	put_wall(map);
 	send_rays(map);
@@ -151,22 +150,23 @@ double distence(t_point p, t_point q)
 	return (sqrt(((p.x - q.x) * (p.x - q.x)) + (p.y - q.y) * (p.y - q.y)));
 }
 
-void interaction_pt(t_map *map, t_point *p)
+void interaction_pt(t_map *map, t_point *p, float angle)
 {
 	t_point plr;
 	plr.x = map->plr.x;
 	plr.y = map->plr.y;
 	t_point inter_h;
 	t_point inter_v;
-	horiz_inter(map, &inter_h);
-	vertic_inter(map, &inter_v);
+	horiz_inter(map, &inter_h, normalize_angle(angle));
+	vertic_inter(map, &inter_v, normalize_angle(angle));
+	printf("end_hor : h_x = %f && h_y = %f\n", inter_h.x, inter_h.y);
+	printf("end_ver : v_x = %f && v_y = %f\n", inter_v.x, inter_v.y);
 	// printf("dis vert %f\n", distence(plr, inter_v));
 	// printf("dis hor %f\n", distence(plr, inter_h));
-	// if (inter_h.x == -1 && inter_h.y == -1)
-	// 	{*p = inter_v;	return;}
-	// if (inter_v.x == -1 && inter_v.y == -1)
-	// 	{*p = inter_h;	return;}
-		
+	if ((inter_h.x == -1 && inter_h.y == -1) ||  inter_h.x > map->width * TILE_SIZE || inter_h.y > map->height * TILE_SIZE)
+		{*p = inter_v;	return;}
+	if ((inter_v.x == -1 && inter_v.y == -1) ||  inter_v.x > map->width * TILE_SIZE || inter_v.y > map->height * TILE_SIZE)
+		{*p = inter_h;	return;}
 	if (distence(plr, inter_h) > distence(plr, inter_v))
 		{*p = inter_v;}
 	else
@@ -176,12 +176,24 @@ void interaction_pt(t_map *map, t_point *p)
 
 void send_rays(t_map *map)
 {
+	int i = -31;
 	t_point m,n;
 	m.x = map->plr.x;
 	m.y = map->plr.y;
-	interaction_pt(map, &n);
+	int j = -1;
+	while (++j < 61)
+	{
+		map->inter[j].x = 0;
+		map->inter[j].y = 0;	
+	}
+	while (++i <= 30)
+	{
+		interaction_pt(map, &n, map->plr.alpha + i);
+		map->inter[i + 31].x = n.x;
+		map->inter[i + 31].y = n.y;
+		put_line(map, m, n);
+	}
 	// printf("point inter : x ; %f y ; %f\n", n.x, n.y);
-	put_line(map, m, n);
 }
 
 int put_2d_map(t_map *map)
@@ -203,7 +215,7 @@ int main(int ac, char **av)
 	if (parse_map(&map, av[1]) != EXIT_SUCCESS)
 		return (FAILDE);
 	ft_resulotion(&map);
-	// print_tmap(map);
+	print_tmap(map);
 	if (put_2d_map(&map) != EXIT_SUCCESS)
 		return (FAILDE);
 }

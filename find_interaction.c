@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 17:15:00 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/17 22:32:41 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/19 12:46:02 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ void find_last_point(t_map *map, t_point *f, long x_inc, long y_inc)
 	// printf("last p : x_inc = %ld && y_inc = %ld\n", x_inc, y_inc);
 	while (f->x >= 0 && f->y >= 0 && f->x <= map->width * TILE_SIZE && f->y <= map->height * TILE_SIZE)
 	{
-		// printf("last p :map[%d][%d]", (int)(f->y / TILE_SIZE), (int)(f->x / TILE_SIZE));
-		// printf("  | %c |\n", map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)]);
+		printf("last p :map[%d][%d]", (int)(f->y / TILE_SIZE), (int)(f->x / TILE_SIZE));
+		printf("  | %c |\n", map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)]);
 		if (map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)] == '1')
 			return ;
 		f->x += x_inc;
@@ -84,91 +84,60 @@ void init_direction(t_bool *dir, float beta)
 	// printf("down = %d , up = %d , right = %d , leff= %d\n", dir->down, dir->up, dir->right, dir->left);
 }
 
-void v_init_first_point(t_map *map, t_point *f, t_bool *dir)
+void v_init_first_point(t_map *map, t_point *f, t_bool *dir, float angle)
 {
 	f->x = (int)(map->plr.x / TILE_SIZE) * TILE_SIZE;
 	if (dir->right)
 		f->x += TILE_SIZE;
-	f->y = map->plr.y + ((f->x - map->plr.x) * tan(map->plr.beta));
+	f->y = map->plr.y + ((f->x - map->plr.x) * tan(deg_to_rad(angle)));
 	if (map->plr.alpha == 0 || map->plr.alpha == 180)
 		f->y = map->plr.y;
-	// printf("f->x = %f && f->y = %f\n", f->x, f->y);
+	if (dir->up)
+		f->y--;
+	if (dir->left)
+		f->x--;
+	if (!dir->up)
+		f->y++;
+	if (!dir->left)
+		f->x++;
+	printf("f->x = %f && f->y = %f\n", f->x, f->y);
 }
 
-void vertic_inter(t_map *map, t_point *p)
+void vertic_inter(t_map *map, t_point *p, float angle)
 {
 	t_point f;
 	t_bool dirction;
 	long x_stp;
 	long y_stp;
 
-	// printf("\n\n======vertical========\n\n");
-	// printf("px = %f && py = %f       X = %i Y = %i\n", map->plr.x, map->plr.y, (int)map->plr.x / TILE_SIZE, (int)map->plr.y / TILE_SIZE);
+	printf("\n\n======vertical========\n\n");
+	printf("px = %f && py = %f       X = %i Y = %i\n", map->plr.x, map->plr.y, (int)map->plr.x / TILE_SIZE, (int)map->plr.y / TILE_SIZE);
 	init_direction(&dirction, map->plr.beta);
-	v_init_first_point(map, &f, &dirction);
+	v_init_first_point(map, &f, &dirction, angle);
 	x_stp = TILE_SIZE;
-	y_stp = TILE_SIZE * tan(map->plr.beta);
+	y_stp = TILE_SIZE * tan(deg_to_rad(angle));
 	if (y_stp < 0)
 		y_stp *= -1;
-	if (dirction.up)
-		f.y--;
-	if (dirction.left)
-		f.x--;
+	
 	//check_90 && 270 cases;
-	if (map->plr.alpha == 90 || map->plr.alpha == 270)
-		{p->x = MAXFLOAT, p->y = MAXFLOAT; return ;}
-	if (map->plr.alpha == 0)
+	if (angle == 90 || angle == 270)
+		{p->x = -1, p->y = -1; return ;}
+	if (angle == 0)
 		find_last_point(map, &f, x_stp, 0);
-	else if (map->plr.alpha == 180)
+	else if (angle == 180)
 		find_last_point(map, &f, -x_stp, 0);
-	else if (map->plr.alpha >= 0 && map->plr.alpha < 90)
+	else if (angle >= 0 && angle < 90)
 		find_last_point(map, &f, x_stp, y_stp);
-	else if (map->plr.alpha > 90 && map->plr.alpha < 180)
+	else if (angle > 90 && angle < 180)
 		find_last_point(map, &f, -x_stp, y_stp);
-	else if (map->plr.alpha > 180 && map->plr.alpha < 270)
+	else if (angle > 180 && angle < 270)
 		find_last_point(map, &f, -x_stp, -y_stp);
-	else if (map->plr.alpha > 270 && map->plr.alpha < 360)
+	else if (angle > 270 && angle < 360)
 		find_last_point(map, &f, x_stp, -y_stp);
 	p->x = f.x;
 	p->y = f.y;
-
-
-
-
-
-
-	// init_direction(&dirction, map->plr.beta);
-	// f.x = (int)(map->plr.x / TILE_SIZE) * TILE_SIZE;//*n
-	// if (dirction.right == 1)
-	// 	f.x += TILE_SIZE;
-	// f.y = map->plr.y + ((map->plr.x - f.x) * tan(map->plr.beta));//*n
-	// if (map->plr.alpha == 90 || map->plr.alpha == 270)
-	// 	f.y = map->plr.y;
-	// // printf("fx = %f && i = %d\n", f.x, (int)f.x / TILE_SIZE);
-	// // printf("fy = %f && j = %d\n", f.y, (int)f.y / TILE_SIZE);
-	// if (map->plr.alpha == 90 || map->plr.alpha == 270)
-	// 	{p->x = -1, p->y =-1; return;}
-	// if (dirction.left == 1)
-	// 	f.x--;
-	
-	// x_stp = TILE_SIZE;
-	// y_stp = x_stp * tan(map->plr.beta);
-	// init_stps(map, &dirction, &x_stp, &y_stp);
-	// // if (map->plr.alpha == 90 || map->plr.alpha == 270)
-	// // 	y_stp = 0;
-	// // printf("x_stp = %ld && y_stp = %ld\n", x_stp, y_stp);
-	// while (f.x >= 0 && f.x <= map->width * TILE_SIZE && f.y >= 0 && f.y <= map->height * TILE_SIZE)
-	// {
-	// 	// printf("char[%d][%d]\n",(int)(f.y / TILE_SIZE),(int)(f.x / TILE_SIZE));
-	// 	if (map->map[(int)(f.y / TILE_SIZE)][(int)(f.x / TILE_SIZE)] == '1')
-	// 		break ;
-	// 	f.x += x_stp; 
-	// 	f.y += y_stp; 
-	// }
-	// p->x = f.x;
-	// p->y = f.y;
-	// printf("end x = %f && i = %d\n", f.x, (int)f.x / TILE_SIZE);
-	// printf("end y = %f && j = %d\n", f.y, (int)f.y / TILE_SIZE);
+	printf("end x = %f && i = %d\n", f.x, (int)f.x / TILE_SIZE);
+	printf("end y = %f && j = %d\n", f.y, (int)f.y / TILE_SIZE);
 }
 
 
@@ -190,21 +159,29 @@ void init_stps(t_map *map, t_bool *dirction, long *x_stp, long *y_stp)
 	
 }
 
-void h_init_first_point(t_map *map, t_point *f, t_bool *dir)
+void h_init_first_point(t_map *map, t_point *f, t_bool *dir, float angle)
 {
 	f->y = floor(map->plr.y / TILE_SIZE) * TILE_SIZE;
 	if (dir->down)
 		f->y += TILE_SIZE;
-	f->x = map->plr.x + ((f->y - map->plr.y) / tan(map->plr.beta));
+	f->x = map->plr.x + ((f->y - map->plr.y) / tan(deg_to_rad(angle)));
 	if (map->plr.alpha == 90 || map->plr.alpha == 270)
 		f->x = map->plr.x;
-	// printf("f->x = %f && f->y = %f\n", f->x, f->y);
+	if (dir->up)
+		f->y--;
+	if (dir->left)
+		f->x--;
+	if (!dir->up)
+		f->y++;
+	if (!dir->left)
+		f->x++;
+	printf("first p_h f->x = %f && f->y = %f\n", f->x, f->y);
 
 }
 
 
 
-void horiz_inter(t_map *map, t_point *p)
+void horiz_inter(t_map *map, t_point *p, float angle)
 {
 	t_point f;
 	t_bool dirction;
@@ -212,62 +189,31 @@ void horiz_inter(t_map *map, t_point *p)
 	long y_stp;
 	
 	//init first point -> init |x_stp| and |y_stp| -->check 4 cases inside
-	// printf("\n\n======hori========\n\n");
-	// printf("px = %f && py = %f       X = %i Y = %i\n", map->plr.x, map->plr.y, (int)map->plr.x / TILE_SIZE, (int)map->plr.y / TILE_SIZE);
+	printf("\n\n======hori========\n\n");
+	printf("px = %f && py = %f       X = %i Y = %i\n", map->plr.x, map->plr.y, (int)map->plr.x / TILE_SIZE, (int)map->plr.y / TILE_SIZE);
 	init_direction(&dirction, map->plr.beta);
-	h_init_first_point(map, &f, &dirction);
+	h_init_first_point(map, &f, &dirction, angle);
 	y_stp = TILE_SIZE;
-	x_stp = TILE_SIZE / tan(map->plr.beta);
+	x_stp = TILE_SIZE / tan(deg_to_rad(angle));
 	if (x_stp < 0)
 		x_stp *= -1;
 	//check_0 && 180 cases;
-	if (dirction.up)
-		f.y--;
-	if (dirction.left)
-		f.x--;
-	if (map->plr.alpha == 0 || map->plr.alpha == 180)
-		{p->x = MAXFLOAT, p->y = MAXFLOAT; return ;}
-	if (map->plr.alpha == 90)
+	if (angle == 0 || angle== 180)
+		{p->x = -1, p->y = -1; return ;}
+	if (angle == 90)
 		find_last_point(map, &f, 0, y_stp);
-	else if (map->plr.alpha == 270)
+	else if (angle == 270)
 		find_last_point(map, &f, 0, -y_stp);
-	else if (map->plr.alpha >= 0 && map->plr.alpha < 90)
+	else if (angle >= 0 && angle < 90)
 		find_last_point(map, &f, x_stp, y_stp);
-	else if (map->plr.alpha >= 90 && map->plr.alpha < 180)
+	else if (angle >= 90 && angle < 180)
 		find_last_point(map, &f, -x_stp, y_stp);
-	else if (map->plr.alpha >= 180 && map->plr.alpha < 270)
+	else if (angle >= 180 && angle < 270)
 		find_last_point(map, &f, -x_stp, -y_stp);
-	else if (map->plr.alpha >= 270 && map->plr.alpha < 360)
+	else if (angle >= 270 && angle < 360)
 		find_last_point(map, &f, x_stp, -y_stp);
 	p->x = f.x;
 	p->y = f.y;
-
-	
-	// f.y = floor(map->plr.y / TILE_SIZE) * TILE_SIZE;//*n
-	// if (dirction.down == 0)
-	// 	f.y += TILE_SIZE; 
-	// f.x = map->plr.x + ((f.y - map->plr.y) / tan(map->plr.beta));//*n
-	// if (dirction.down == 0)
-	// 	f.y--;
-	// if (map->plr.alpha == 90 || map->plr.alpha == 270)
-	// 	f.x = map->plr.x;
-	// if (map->plr.alpha == 0 || map->plr.alpha == 180)
-	// 	{p->x = -1, p->y =-1; return;}
-	// y_stp = TILE_SIZE;
-	// x_stp = TILE_SIZE / tan(map->plr.beta);
-	// init_stps(map, &dirction, &x_stp, &y_stp);
-	// while (f.x >= 0  && f.y >= 0)
-	// {
-	// 	if (map->map[(int)(f.y / TILE_SIZE)][(int)(f.x / TILE_SIZE)] == '1')
-	// 		break ;
-	// 	f.x += x_stp; 
-	// 	f.y += y_stp;
-	// 	if (f.x > map->width * TILE_SIZE || f.y > map->height * TILE_SIZE)
-	// 	{printf("wa l9lawi khdem\n"); break;}
-	// }
-	// p->x = f.x;
-	// p->y = f.y;
-	
-// 	printf("end x = %f  < %f && i = %d\n", f.x, (float)map->width * TILE_SIZE , (int)f.x / TILE_SIZE);
-// 	printf("end y = %f  < %f && j = %d\n", f.y, (float)map->height * TILE_SIZE, (int)f.y / TILE_SIZE);
+	printf("end x = %f  < %f && i = %d\n", f.x, (float)map->width * TILE_SIZE , (int)f.x / TILE_SIZE);
+	printf("end y = %f  < %f && j = %d\n", f.y, (float)map->height * TILE_SIZE, (int)f.y / TILE_SIZE);
 }

@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/17 22:38:40 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/19 12:41:31 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #define FAILDE -1
 #define CHECK -2
+#define VAR 2
 
 #define NORTH 10
 #define SOUTH 11
@@ -27,7 +28,7 @@
 #define UP_KEY 126
 #define ESC_KEY 53
 
-#define TILE_SIZE 16
+#define TILE_SIZE 32
 
 #include <mlx.h>
 #include <math.h>
@@ -77,12 +78,13 @@ typedef struct t_map
 	t_mlx	mlx_;
 	int		fl;
 	int		ce;
-	int		height;
-	int		width;
+	int		height;    // y_max / TILE
+	int		width;    //  x_max / TILE
 	char	*no;
 	char	*so;
 	char	*we;
 	char	*ea;
+	t_point inter[61];
 }	t_map;
 
 typedef struct t_check
@@ -130,9 +132,9 @@ void send_rays(t_map *map);
 float rad_to_deg(float rad);
 float deg_to_rad(float deg);
 void init_direction(t_bool *dir, float beta);
-void vertic_inter(t_map *map, t_point *p);
+void vertic_inter(t_map *map, t_point *p, float angle);
 void init_stps(t_map *map, t_bool *dirction, long *x_stp, long *y_stp);
-void horiz_inter(t_map *map, t_point *p);
+void horiz_inter(t_map *map, t_point *p, float angle);
 void put_line(t_map *map, t_point n, t_point m);
 
 
