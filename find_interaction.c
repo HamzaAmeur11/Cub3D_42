@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 17:15:00 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/19 12:46:02 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/19 23:54:14 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ void find_last_point(t_map *map, t_point *f, long x_inc, long y_inc)
 	// printf("last p : x_inc = %ld && y_inc = %ld\n", x_inc, y_inc);
 	while (f->x >= 0 && f->y >= 0 && f->x <= map->width * TILE_SIZE && f->y <= map->height * TILE_SIZE)
 	{
-		printf("last p :map[%d][%d]", (int)(f->y / TILE_SIZE), (int)(f->x / TILE_SIZE));
-		printf("  | %c |\n", map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)]);
+		// printf("last p :map[%d][%d]", (int)(f->y / TILE_SIZE), (int)(f->x / TILE_SIZE));
+		// printf("  | %c |\n", map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)]);
 		if (map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)] == '1')
 			return ;
 		f->x += x_inc;
@@ -42,7 +42,7 @@ int	check_v(float x)
 	return (i);
 }
 
-void put_line(t_map *map, t_point n, t_point m)
+void put_line(t_map *map, t_point n, t_point m, int clr)
 {
 	//find the point of interaction with the wall M(x_1 , y_1)
 	// printf("\n=====put map=====\n");
@@ -69,7 +69,7 @@ void put_line(t_map *map, t_point n, t_point m)
 	// printf("first x = %f && y = %f\n", x,y);
 	while (++i < steps)
 	{
-		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, x, y, 0xFF0F0F);
+		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, x, y, clr);
 		x += x_inc;
 		y += y_inc;
 	}
@@ -81,7 +81,7 @@ void init_direction(t_bool *dir, float beta)
 	dir->up = !dir->down;
 	dir->right = beta > 1.5 * M_PI || beta <= M_PI / 2;
 	dir->left = !dir->right;
-	// printf("down = %d , up = %d , right = %d , leff= %d\n", dir->down, dir->up, dir->right, dir->left);
+	printf("down = %d , up = %d , right = %d , leff= %d\n", dir->down, dir->up, dir->right, dir->left);
 }
 
 void v_init_first_point(t_map *map, t_point *f, t_bool *dir, float angle)
@@ -90,7 +90,7 @@ void v_init_first_point(t_map *map, t_point *f, t_bool *dir, float angle)
 	if (dir->right)
 		f->x += TILE_SIZE;
 	f->y = map->plr.y + ((f->x - map->plr.x) * tan(deg_to_rad(angle)));
-	if (map->plr.alpha == 0 || map->plr.alpha == 180)
+	if (angle == 0 || angle == 180)
 		f->y = map->plr.y;
 	if (dir->up)
 		f->y--;
@@ -100,7 +100,7 @@ void v_init_first_point(t_map *map, t_point *f, t_bool *dir, float angle)
 		f->y++;
 	if (!dir->left)
 		f->x++;
-	printf("f->x = %f && f->y = %f\n", f->x, f->y);
+	// printf("f->x = %f && f->y = %f\n", f->x, f->y);
 }
 
 void vertic_inter(t_map *map, t_point *p, float angle)
@@ -110,9 +110,9 @@ void vertic_inter(t_map *map, t_point *p, float angle)
 	long x_stp;
 	long y_stp;
 
-	printf("\n\n======vertical========\n\n");
-	printf("px = %f && py = %f       X = %i Y = %i\n", map->plr.x, map->plr.y, (int)map->plr.x / TILE_SIZE, (int)map->plr.y / TILE_SIZE);
-	init_direction(&dirction, map->plr.beta);
+	// printf("\n\n======vertical========\n\n");
+	// printf("px = %f && py = %f       X = %i Y = %i\n", map->plr.x, map->plr.y, (int)map->plr.x / TILE_SIZE, (int)map->plr.y / TILE_SIZE);
+	init_direction(&dirction, deg_to_rad(angle));
 	v_init_first_point(map, &f, &dirction, angle);
 	x_stp = TILE_SIZE;
 	y_stp = TILE_SIZE * tan(deg_to_rad(angle));
@@ -134,10 +134,18 @@ void vertic_inter(t_map *map, t_point *p, float angle)
 		find_last_point(map, &f, -x_stp, -y_stp);
 	else if (angle > 270 && angle < 360)
 		find_last_point(map, &f, x_stp, -y_stp);
+	if (dirction.up)
+		f.y++;
+	if (dirction.left)
+		f.x++;
+	if (!dirction.up)
+		f.y--;
+	if (!dirction.left)
+		f.x--;
 	p->x = f.x;
 	p->y = f.y;
-	printf("end x = %f && i = %d\n", f.x, (int)f.x / TILE_SIZE);
-	printf("end y = %f && j = %d\n", f.y, (int)f.y / TILE_SIZE);
+	// printf("end x = %f && i = %d\n", f.x, (int)f.x / TILE_SIZE);
+	// printf("end y = %f && j = %d\n", f.y, (int)f.y / TILE_SIZE);
 }
 
 
@@ -165,7 +173,7 @@ void h_init_first_point(t_map *map, t_point *f, t_bool *dir, float angle)
 	if (dir->down)
 		f->y += TILE_SIZE;
 	f->x = map->plr.x + ((f->y - map->plr.y) / tan(deg_to_rad(angle)));
-	if (map->plr.alpha == 90 || map->plr.alpha == 270)
+	if (angle == 90 || angle == 270)
 		f->x = map->plr.x;
 	if (dir->up)
 		f->y--;
@@ -175,7 +183,7 @@ void h_init_first_point(t_map *map, t_point *f, t_bool *dir, float angle)
 		f->y++;
 	if (!dir->left)
 		f->x++;
-	printf("first p_h f->x = %f && f->y = %f\n", f->x, f->y);
+	// printf("first p_h f->x = %f && f->y = %f\n", f->x, f->y);
 
 }
 
@@ -189,9 +197,9 @@ void horiz_inter(t_map *map, t_point *p, float angle)
 	long y_stp;
 	
 	//init first point -> init |x_stp| and |y_stp| -->check 4 cases inside
-	printf("\n\n======hori========\n\n");
-	printf("px = %f && py = %f       X = %i Y = %i\n", map->plr.x, map->plr.y, (int)map->plr.x / TILE_SIZE, (int)map->plr.y / TILE_SIZE);
-	init_direction(&dirction, map->plr.beta);
+	// printf("\n\n======hori========\n\n");
+	// printf("px = %f && py = %f       X = %i Y = %i\n", map->plr.x, map->plr.y, (int)map->plr.x / TILE_SIZE, (int)map->plr.y / TILE_SIZE);
+	init_direction(&dirction, deg_to_rad(angle));
 	h_init_first_point(map, &f, &dirction, angle);
 	y_stp = TILE_SIZE;
 	x_stp = TILE_SIZE / tan(deg_to_rad(angle));
@@ -212,8 +220,16 @@ void horiz_inter(t_map *map, t_point *p, float angle)
 		find_last_point(map, &f, -x_stp, -y_stp);
 	else if (angle >= 270 && angle < 360)
 		find_last_point(map, &f, x_stp, -y_stp);
+	if (dirction.up)
+		f.y++;
+	if (dirction.left)
+		f.x++;
+	if (!dirction.up)
+		f.y--;
+	if (!dirction.left)
+		f.x--;
 	p->x = f.x;
 	p->y = f.y;
-	printf("end x = %f  < %f && i = %d\n", f.x, (float)map->width * TILE_SIZE , (int)f.x / TILE_SIZE);
-	printf("end y = %f  < %f && j = %d\n", f.y, (float)map->height * TILE_SIZE, (int)f.y / TILE_SIZE);
+	// printf("end x = %f  < %f && i = %d\n", f.x, (float)map->width * TILE_SIZE , (int)f.x / TILE_SIZE);
+	// printf("end y = %f  < %f && j = %d\n", f.y, (float)map->height * TILE_SIZE, (int)f.y / TILE_SIZE);
 }

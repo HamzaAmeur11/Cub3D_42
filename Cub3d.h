@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/19 12:41:31 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/19 23:44:01 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@
 #define ESC_KEY 53
 
 #define TILE_SIZE 32
+#define X_SIZE 320
+#define FOV 60.0
+
 
 #include <mlx.h>
 #include <math.h>
@@ -84,7 +87,7 @@ typedef struct t_map
 	char	*so;
 	char	*we;
 	char	*ea;
-	t_point inter[61];
+	t_point inter[320];
 }	t_map;
 
 typedef struct t_check
@@ -125,7 +128,6 @@ char **init_file(char *file_name);
 int	check_extens(char *str);
 int	error_args(int ac);
 int is_upper_char(char c);
-void put_line(t_map *map, t_point n, t_point m);
 
 void send_rays(t_map *map);
 
@@ -135,7 +137,7 @@ void init_direction(t_bool *dir, float beta);
 void vertic_inter(t_map *map, t_point *p, float angle);
 void init_stps(t_map *map, t_bool *dirction, long *x_stp, long *y_stp);
 void horiz_inter(t_map *map, t_point *p, float angle);
-void put_line(t_map *map, t_point n, t_point m);
+void put_line(t_map *map, t_point n, t_point m, int clr);
 
 
 void init_stps(t_map *map, t_bool *dirction, long *x_stp, long *y_stp);

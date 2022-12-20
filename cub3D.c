@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/19 12:54:20 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/19 23:52:15 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,8 @@ int	moves(int keycode, t_map *map)
 		
 	}
 	//   edit x and y     //
-	if (map->plr.walk != 0)
-		edit_pos(map);
+	// if (map->plr.walk != 0)
+	// 	edit_pos(map);
 	mlx_clear_window(map->mlx_.mlx_ptr, map->mlx_.win_ptr);
 	put_wall(map);
 	send_rays(map);
@@ -159,40 +159,45 @@ void interaction_pt(t_map *map, t_point *p, float angle)
 	t_point inter_v;
 	horiz_inter(map, &inter_h, normalize_angle(angle));
 	vertic_inter(map, &inter_v, normalize_angle(angle));
-	printf("end_hor : h_x = %f && h_y = %f\n", inter_h.x, inter_h.y);
-	printf("end_ver : v_x = %f && v_y = %f\n", inter_v.x, inter_v.y);
+	// printf("end_hor : h_x = %f && h_y = %f\n", inter_h.x, inter_h.y);
+	// printf("end_ver : v_x = %f && v_y = %f\n", inter_v.x, inter_v.y);
 	// printf("dis vert %f\n", distence(plr, inter_v));
 	// printf("dis hor %f\n", distence(plr, inter_h));
 	if ((inter_h.x == -1 && inter_h.y == -1) ||  inter_h.x > map->width * TILE_SIZE || inter_h.y > map->height * TILE_SIZE)
-		{*p = inter_v;	return;}
-	if ((inter_v.x == -1 && inter_v.y == -1) ||  inter_v.x > map->width * TILE_SIZE || inter_v.y > map->height * TILE_SIZE)
-		{*p = inter_h;	return;}
+		{printf("1V hor(%f , %f) >  verti (%f , %f)  ->", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*p = inter_v;	return;}
+	if ((inter_v.x == -1 && inter_v.y == -1) /*||  inter_v.x > map->width * TILE_SIZE || inter_v.y > map->height * TILE_SIZE*/)
+		{printf("2H ver(%f , %f) > hori(%f , %f)   ->", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*p = inter_h;	return;}
 	if (distence(plr, inter_h) > distence(plr, inter_v))
-		{*p = inter_v;}
+		{printf("3V hor(%f , %f) >  verti (%f , %f)  ->", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*p = inter_v;}
 	else
-		{*p = inter_h;}
+		{printf("4H ver(%f , %f) > hori(%f , %f)   ->", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*p = inter_h;}
 			
 }
 
 void send_rays(t_map *map)
 {
-	int i = -31;
+	int i = -1;
+	float ray_angle;
+	ray_angle = map->plr.alpha - 30;
 	t_point m,n;
 	m.x = map->plr.x;
-	m.y = map->plr.y;
-	int j = -1;
-	while (++j < 61)
+	m.y = map->plr.y;;
+	//ray-angle inc : FOV / Map_MAX_X
+	while (++i < X_SIZE && ray_angle <= 30 + map->plr.alpha)
 	{
-		map->inter[j].x = 0;
-		map->inter[j].y = 0;	
+		n.x = 0;n.y = 0;
+		interaction_pt(map, &n, ray_angle);
+		// printf("befor map->plr.alpha + (FOV / i) = %f\n", ray_angle);
+		map->inter[i].x = n.x;
+		map->inter[i].y = n.y;
+		printf("inter : angle = %f \n", ray_angle);
+			put_line(map, m, n, 0xFF0000);
+		ray_angle += FOV / X_SIZE;
+		// printf("aftermap->plr.alpha + (FOV / i) = %f\n", f);
 	}
-	while (++i <= 30)
-	{
-		interaction_pt(map, &n, map->plr.alpha + i);
-		map->inter[i + 31].x = n.x;
-		map->inter[i + 31].y = n.y;
-		put_line(map, m, n);
-	}
+	map->inter[i].x = -10;
+	map->inter[i].y = -10;
+	// printf("map->plr.alpha + (FOV / i) = %f      FOV / X_SIZE = %f\n", ray_angle, (float)FOV / X_SIZE);
 	// printf("point inter : x ; %f y ; %f\n", n.x, n.y);
 }
 
