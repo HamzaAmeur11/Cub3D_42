@@ -6,23 +6,44 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 17:15:00 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/19 23:54:14 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/23 17:10:11 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
 
-void find_last_point(t_map *map, t_point *f, long x_inc, long y_inc)
+void find_last_point_v(t_map *map, t_point *f, long x_inc, long angle)
 {
 	// printf("last p : x_inc = %ld && y_inc = %ld\n", x_inc, y_inc);
 	while (f->x >= 0 && f->y >= 0 && f->x <= map->width * TILE_SIZE && f->y <= map->height * TILE_SIZE)
 	{
-		// printf("last p :map[%d][%d]", (int)(f->y / TILE_SIZE), (int)(f->x / TILE_SIZE));
-		// printf("  | %c |\n", map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)]);
+	// printf("V last p :map[%d][%d]", (int)(f->y / TILE_SIZE), (int)(f->x / TILE_SIZE));
+	// printf("f->y : %f / TL = %d f->x : %f / TL = %d   ", f->y, (int)(f->y / TILE_SIZE), f->x, (int)(f->x / TILE_SIZE));
+	// printf("  | %c |\n", map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)]);
 		if (map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)] == '1')
 			return ;
 		f->x += x_inc;
+		f->y = map->plr.y + ((f->x - map->plr.x) * tan(deg_to_rad(angle)));
+		if (angle == 0 || angle == 180)
+			f->y = map->plr.y;
+	}
+}
+
+
+void find_last_point_h(t_map *map, t_point *f, long angle, long y_inc)
+{
+	while (f->x >= 0 && f->y >= 0 && f->x <= map->width * TILE_SIZE && f->y <= map->height * TILE_SIZE)
+	{
+	// printf("H last p : x_inc = %ld && y_inc = %ld\n", x_inc, y_inc);
+	// printf("last p :map[%d][%d]", (int)(f->y / TILE_SIZE), (int)(f->x / TILE_SIZE));
+	// printf("f->y : %f / TL = %d f->x : %f / TL = %d   ", f->y, (int)(f->y / TILE_SIZE), f->x, (int)(f->x / TILE_SIZE));
+	// printf("  | %c |\n", map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)]);
+		if (map->map[(int)(f->y / TILE_SIZE)][(int)(f->x / TILE_SIZE)] == '1')
+			return ;
 		f->y += y_inc;
+		f->x = map->plr.x + ((f->y - map->plr.y) / tan(deg_to_rad(angle)));
+		if (angle == 90 || angle == 270)
+			f->x = map->plr.x;
 	}
 }
 
@@ -81,7 +102,7 @@ void init_direction(t_bool *dir, float beta)
 	dir->up = !dir->down;
 	dir->right = beta > 1.5 * M_PI || beta <= M_PI / 2;
 	dir->left = !dir->right;
-	printf("down = %d , up = %d , right = %d , leff= %d\n", dir->down, dir->up, dir->right, dir->left);
+	// printf("down = %d , up = %d , right = %d , leff= %d\n", dir->down, dir->up, dir->right, dir->left);
 }
 
 void v_init_first_point(t_map *map, t_point *f, t_bool *dir, float angle)
@@ -123,17 +144,17 @@ void vertic_inter(t_map *map, t_point *p, float angle)
 	if (angle == 90 || angle == 270)
 		{p->x = -1, p->y = -1; return ;}
 	if (angle == 0)
-		find_last_point(map, &f, x_stp, 0);
+		find_last_point_v(map, &f, x_stp, angle);
 	else if (angle == 180)
-		find_last_point(map, &f, -x_stp, 0);
+		find_last_point_v(map, &f, -x_stp, angle);
 	else if (angle >= 0 && angle < 90)
-		find_last_point(map, &f, x_stp, y_stp);
+		find_last_point_v(map, &f, x_stp, angle);
 	else if (angle > 90 && angle < 180)
-		find_last_point(map, &f, -x_stp, y_stp);
+		find_last_point_v(map, &f, -x_stp, angle);
 	else if (angle > 180 && angle < 270)
-		find_last_point(map, &f, -x_stp, -y_stp);
+		find_last_point_v(map, &f, -x_stp, angle);
 	else if (angle > 270 && angle < 360)
-		find_last_point(map, &f, x_stp, -y_stp);
+		find_last_point_v(map, &f, x_stp, angle);
 	if (dirction.up)
 		f.y++;
 	if (dirction.left)
@@ -209,17 +230,17 @@ void horiz_inter(t_map *map, t_point *p, float angle)
 	if (angle == 0 || angle== 180)
 		{p->x = -1, p->y = -1; return ;}
 	if (angle == 90)
-		find_last_point(map, &f, 0, y_stp);
+		find_last_point_h(map, &f, angle, y_stp);
 	else if (angle == 270)
-		find_last_point(map, &f, 0, -y_stp);
+		find_last_point_h(map, &f, angle, -y_stp);
 	else if (angle >= 0 && angle < 90)
-		find_last_point(map, &f, x_stp, y_stp);
+		find_last_point_h(map, &f, angle, y_stp);
 	else if (angle >= 90 && angle < 180)
-		find_last_point(map, &f, -x_stp, y_stp);
+		find_last_point_h(map, &f, angle, y_stp);
 	else if (angle >= 180 && angle < 270)
-		find_last_point(map, &f, -x_stp, -y_stp);
+		find_last_point_h(map, &f, angle, -y_stp);
 	else if (angle >= 270 && angle < 360)
-		find_last_point(map, &f, x_stp, -y_stp);
+		find_last_point_h(map, &f, angle, -y_stp);
 	if (dirction.up)
 		f.y++;
 	if (dirction.left)

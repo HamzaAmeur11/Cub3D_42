@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/19 23:44:01 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/23 17:39:37 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #define FAILDE -1
 #define CHECK -2
-#define VAR 2
+
 
 #define NORTH 10
 #define SOUTH 11
@@ -28,9 +28,11 @@
 #define UP_KEY 126
 #define ESC_KEY 53
 
-#define TILE_SIZE 32
+#define TILE_SIZE 30
 #define X_SIZE 320
-#define FOV 60.0
+#define FOV_D 60.0
+#define FOV_R (FOV_D * M_PI) / 180
+#define VAR 2
 
 
 #include <mlx.h>
@@ -87,6 +89,7 @@ typedef struct t_map
 	char	*so;
 	char	*we;
 	char	*ea;
+	float	ray_angle;
 	t_point inter[320];
 }	t_map;
 
