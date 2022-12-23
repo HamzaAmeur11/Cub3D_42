@@ -6,21 +6,11 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/18 14:42:34 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/19 20:37:45 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
-
-void ft_free(char **str)
-{
-	int i;
-
-	i = 0;
-	while(str[i] != NULL)
-		free(str[i++]);
-	free(str);
-}
 
 int	map_elements(char c)
 {

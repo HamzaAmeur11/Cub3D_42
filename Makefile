@@ -6,7 +6,7 @@
 #    By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/29 13:48:25 by hameur            #+#    #+#              #
-#    Updated: 2022/12/06 02:03:34 by megrisse         ###   ########.fr        #
+#    Updated: 2022/12/19 20:43:27 by megrisse         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,9 @@ SRC	:=	cub3D.c \
 		ft_split.c \
 		gnl.c \
 		check_map.c \
+		moves.c \
+		error.c \
+		draw.c \
 
 OBJS	:=	$(SRC:.c=.o)
 

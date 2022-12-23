@@ -23,6 +23,9 @@
 		"vector": "c",
 		"__cxx_version": "c",
 		"__hash_table": "c",
-		"type_traits": "c"
+		"type_traits": "c",
+		"__node_handle": "c",
+		"cstdlib": "c",
+		"optional": "c"
 	}
 }

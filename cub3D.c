@@ -6,30 +6,11 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/19 12:56:17 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/23 14:39:44 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
-
-int	error_args(int ac)
-{
-	if (ac < 0)
-	{
-		ft_putstr_fd((char *)"The file must end in ` *.cub `\n", 2);
-		return(FAILDE);
-	}
-	else if (ac == 1)
-	{
-		ft_putstr_fd((char *)"Didn't send any arg\n", 2);
-		return (EXIT_FAILURE);
-	}
-	else
-	{
-		ft_putstr_fd((char *)"You send many args !!!\n", 2);
-		return (EXIT_FAILURE + EXIT_FAILURE);
-	}
-}
 
 int	check_extens(char *str)
 {
@@ -46,8 +27,6 @@ int	check_extens(char *str)
 		return (FAILDE);
 	return (EXIT_SUCCESS);
 }
-
-
 
 char **init_file(char *file_name)
 { 
@@ -290,6 +269,7 @@ void print_tmap(t_map map)
 	int i = -1;
 	while (map.map[++i])
 		printf("-%s|\n", map.map[i]);
+	printf("key =======> %f\n", map.key);
 }
 
 void	ft_resulotion(t_map *map)
@@ -307,14 +287,6 @@ void	ft_resulotion(t_map *map)
 	map->width = j;
 }
 
-void	my_mlx_pixel_put(t_map *data, int x, int y, int color)
-{
-	char	*dst;
-
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
-}
-
 bool is_player(t_map *map, float i, float j)
 {
 	float x;
@@ -322,195 +294,22 @@ bool is_player(t_map *map, float i, float j)
 	float px;
 	float py;
 
-	px = map->plr.x + 0.5;
-	py = map->plr.y + 0.5;
+	px = map->plr.x + map->key;
+	py = map->plr.y + map->key;
 	x = i / MINI_SIZE;
 	y = j / MINI_SIZE;
-	return ((x-px)*(x-px) + (y-py)*(y-py) <= 0.2 * 0.2);
-}
-
-void	draw_player(t_map map, float x, float y, int color)
-{
-	float	i;
-	float	j;
-
-	i = y + 1;
-	while(i < y + MINI_SIZE)
-	{
-		j = x + 1;
-		while (j < x + MINI_SIZE)
-		{
-			if (is_player(&map, j, i)/* && map.plr.x == j && map.plr.y == i*/)
-				my_mlx_pixel_put(&map, j, i, color);
-			j++;
-		}
-		i++;
-	}
-}
-
-void	draw_car(t_map map, int x, int y, int color)
-{
-	int	i;
-	int	j;
-
-	i = y + 1;
-	while(i < y + MINI_SIZE)
-	{
-		j = x + 1;
-		while (j < x + MINI_SIZE)
-		{
-			my_mlx_pixel_put(&map, j, i, color);
-			j++;
-		}
-		i++;
-	}
-}
-
-void draw_walls(t_map map)
-{
-	int	y;
-	int	x;
-	int	i;
-	int	j;
-
-	y = 0;
-	while (map.map[y] != NULL)
-	{
-		x = 0;
-		while (map.map[y][x] != '\0')
-		{
-			i = y;
-			j = x;
-			if (map.map[y][x] == '1')
-				draw_car(map, j * MINI_SIZE, i * MINI_SIZE, 0x808080);
-			else if (map.map[y][x] == '0')
-				draw_car(map, j * MINI_SIZE, i * MINI_SIZE, 0xFFFFFF);
-			else if (map.map[y][x] == 'W')
-				draw_car(map, j * MINI_SIZE, i * MINI_SIZE, 0xFFFFFF);
-			else if (map.map[y][x] == ' ')
-				draw_car(map, j * MINI_SIZE, y * MINI_SIZE, 0x008000);
-			x++;
-		}
-		y++;
-	}
-	mlx_put_image_to_window(map.mlx, map.wind, map.img, 0, 0);
-}
-
-int	ft_destroy(int key, t_map *map)
-{
-	mlx_destroy_image(map->mlx, map->img);
-	mlx_destroy_window(map->mlx, map->wind);
-	ft_free(map->map);
-	exit (key);
-}
-
-int	key_pressed(int key, t_map *map)
-{
-	printf("=============> %d\n", key);
-	if (key == W_KEY)
-		map->plr.walk = -1;
-	else if (key == S_KEY)
-		map->plr.walk = 1;
-	else if (key == A_KEY)
-		map->plr.turn = -1;
-	else if (key == D_KEY)
-		map->plr.turn = 1;
-	else if (key == ESC_KEY)
-		ft_destroy(1, map);
-	printf("turn ==> %d walk ==> %d\n", map->plr.turn, map->plr.walk);
-	return (EXIT_SUCCESS);
-}
-
-int	key_released(int key, t_map *map)
-{
-	if (key == W_KEY)
-		map->plr.walk = 0;
-	else if (key == S_KEY)
-		map->plr.walk = 0;
-	else if (key == A_KEY)
-		map->plr.turn = 0;
-	else if (key == D_KEY)
-		map->plr.turn = 0;
-	printf("x ======> %f y ======> %f\n", map->plr.x, map->plr.y);
-	printf("turn ==> %d walk ==> %d\n", map->plr.turn, map->plr.walk);
-	return (EXIT_SUCCESS);
-}
-
-//	when player move to another cub //
-
-void	move_player(t_map *map, float p_x, float p_y)
-{
-	int	i;
-	int	x;
-	
-	i = floor(p_y);
-	x = floor(p_x);
-	// printf("i === %d x == %d", i, x);
-	if (map->plr.turn == -1)
-		map->plr.x -= map->plr.mov_speed;
-	else if (map->plr.turn == 1)
-		map->plr.x += map->plr.mov_speed;
-	else if (map->plr.walk == -1)
-		map->plr.y -= map->plr.mov_speed;
-	else if (map->plr.walk == 1)
-		map->plr.y += map->plr.mov_speed;
-	// map->map[i][x] = '0';
-}
-
-// when player move to wall cub //
-
-int	step_to_wall(t_map *map, t_plr plr)
-{
-	int	i;
-	int	j;
-	int	left;//
-	int	right;//
-	int	up;//
-	int	down;//
-	
-	i = floor(plr.y);
-	j = floor(plr.x);
-	left = floor(plr.x - plr.mov_speed);
-	right = floor(plr.x + plr.mov_speed);
-	up = floor(plr.y - plr.mov_speed);
-	down = floor(plr.y + plr.mov_speed);
-	if (plr.turn == -1 && map->map[i][left] == '1')
-		return (1);
-	else if (map->plr.turn == 1 && map->map[i][right] == '1')
-		return (1);
-	else if (map->plr.walk == -1 && map->map[up][j] == '1')
-		return (1);
-	else if (map->plr.walk == 1 && map->map[down][j] == '1')
-		return (1);
-	else
-		return (0);
-}
-
-void	draw_minimap(t_map map)
-{
-	draw_walls(map);
-	draw_player(map, map.plr.x * MINI_SIZE, map.plr.y * MINI_SIZE, 0xFF0000);
-	mlx_put_image_to_window(map.mlx, map.wind, map.img, 0, 0);
-}
-
-
-void	keys_handle(t_map *map)
-{
-	mlx_hook(map->wind, 17, 0, ft_destroy, map);
-	mlx_hook(map->wind, 2, 0, key_pressed, map);
-	mlx_hook(map->wind, 3, 0, key_released, map);
+	return ((x-px)*(x-px) + (y-py)*(y-py) <= 0.3 * 0.3);
 }
 
 void refresh(t_map *map)
 {
-	mlx_destroy_image(map->mlx, map->img);
-	map->img = mlx_new_image(map->mlx, map->width * MINI_SIZE, map->height * MINI_SIZE);
-	map->addr = mlx_get_data_addr(map->img, &map->bits_per_pixel, &map->line_length, &map->endian);
+	mlx_destroy_image(map->mlx.mlx, map->mlx.img);
+	map->mlx.img = mlx_new_image(map->mlx.mlx, map->width * MINI_SIZE, map->height * MINI_SIZE);
+	map->mlx.addr = mlx_get_data_addr(map->mlx.img, &map->mlx.bits_per_pixel, &map->mlx.line_length, &map->mlx.endian);
 }
 
-void	game_time(t_map *map)
+void	check_moves(t_map *map)
 {
-	// printf("x == %f y == %f\n", map->plr.x, map->plr.y);
 	if (step_to_wall(map, map->plr) == EXIT_SUCCESS)
 		move_player(map, map->plr.x, map->plr.y);
 }
@@ -518,7 +317,7 @@ void	game_time(t_map *map)
 int	game(t_map *map)
 {
 	refresh(map);
-	game_time(map);
+	check_moves(map);
 	draw_minimap(*map);
 	return (EXIT_SUCCESS);
 }
@@ -526,27 +325,25 @@ int	game(t_map *map)
 int main(int ac, char **av)
 {
 	t_map 	map;
-	int		i;
-	int		j;
+
 	
 	if (ac != 2)
 		return(error_args(ac));
 	if (parse_map(&map, av[1]) != EXIT_SUCCESS)
 		return (FAILDE);
-	i = 0;
-	int	y = 0;
-	int x;
 	ft_resulotion(&map);
-	map.mlx = mlx_init();
-	if (!map.mlx)
+	map.mlx.mlx = mlx_init();
+	if (!map.mlx.mlx)
 		return (0);
-	map.wind = mlx_new_window(map.mlx, map.width * 32, map.height * 32, "Cub3D_42");
-	map.img = mlx_new_image(map.mlx, map.width * MINI_SIZE, map.height * MINI_SIZE);
-	map.addr = mlx_get_data_addr(map.img, &map.bits_per_pixel, &map.line_length, &map.endian);
 	init_player_pos(&map);
+	map.mlx.wind = mlx_new_window(map.mlx.mlx, map.width * 32, map.height * 32, "Cub3D_42");
+	map.mlx.img = mlx_new_image(map.mlx.mlx, map.width * MINI_SIZE, map.height * MINI_SIZE);
+	map.mlx.addr = mlx_get_data_addr(map.mlx.img, &map.mlx.bits_per_pixel, &map.mlx.line_length, &map.mlx.endian);
 	draw_minimap(map);
 	keys_handle(&map);
-	mlx_loop_hook(map.mlx, game, &map);
+	map.key = 0.5;
+	mlx_loop_hook(map.mlx.mlx, game, &map);
 	print_tmap(map);
-	mlx_loop(map.mlx);
+	map.key = 0;
+	mlx_loop(map.mlx.mlx);
 }
