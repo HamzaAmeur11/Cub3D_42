@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/19 15:22:48 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/24 19:01:18 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@ void init_pos(t_plr *plr, int x, int y, char c)
 	plr->y = (y + 0.5) * TILE_SIZE;
 	plr->turn = 0;
 	plr->walk = 0;
-	plr->mov_speed = 0.1;
-	plr->rot_speed = (2 * M_PI) / 180;
+	plr->side = 0;
+	plr->mov_speed = SPEED;
+	plr->rot_speed = ROOOT;
 	if (c == 'N')
 		plr->alpha = 270, plr->beta = (3 * M_PI) / 2;
 	else if (c == 'W')

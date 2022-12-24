@@ -6,7 +6,7 @@
 #    By: hameur <hameur@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/29 13:48:25 by hameur            #+#    #+#              #
-#    Updated: 2022/12/16 17:15:10 by hameur           ###   ########.fr        #
+#    Updated: 2022/12/23 20:25:49 by hameur           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRC	:=	cub3D.c \
 		check_map.c \
 		parse_map.c \
 		find_interaction.c \
+		put_map.c \
 
 OBJS	:=	$(SRC:.c=.o)
 

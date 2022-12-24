@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/23 17:39:37 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/24 22:03:45 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,20 @@
 #define UP_KEY 126
 #define ESC_KEY 53
 
-#define TILE_SIZE 30
-#define X_SIZE 320
+#define W 13
+#define S 1
+#define A 0
+#define D 2
+
+#define SPEED 10
+#define ROOOT 5
+
+#define TILE_SIZE 32
+#define X_SIZE 1200
+#define Y_SIZE 720
 #define FOV_D 60.0
 #define FOV_R (FOV_D * M_PI) / 180
-#define VAR 2
+#define VAR 4
 
 
 #include <mlx.h>
@@ -54,20 +63,22 @@ typedef struct t_bool
 
 typedef struct t_point
 {
-	float x;
-	float y;
+	double x;
+	double y;
 }	t_point;
 
 typedef struct t_plr
 {
-	float x;
-	float y;
-	float alpha;
-	float beta;
-	int 	turn;  // -1 if left && +1 if right
+	t_point p;
+	double x;
+	double y;
+	double alpha;
+	double beta;
+	int 	turn;  // -1 if alpha left && +1 if alpha right
 	int 	walk;	// -1 if back && +1 if fronte
-	float mov_speed;
-	float rot_speed;
+	int		side;
+	double mov_speed;
+	double rot_speed;
 }	t_plr;
 
 typedef struct t_mlx
@@ -79,6 +90,7 @@ typedef struct t_mlx
 typedef struct t_map
 {
 	char	**map;
+	t_bool	dir;
 	t_plr	plr;
 	t_mlx	mlx_;
 	int		fl;
@@ -89,8 +101,8 @@ typedef struct t_map
 	char	*so;
 	char	*we;
 	char	*ea;
-	float	ray_angle;
-	t_point inter[320];
+	double	ray_angle;
+	double inter[X_SIZE];
 }	t_map;
 
 typedef struct t_check
@@ -132,14 +144,28 @@ int	check_extens(char *str);
 int	error_args(int ac);
 int is_upper_char(char c);
 
-void send_rays(t_map *map);
 
-float rad_to_deg(float rad);
-float deg_to_rad(float deg);
-void init_direction(t_bool *dir, float beta);
-void vertic_inter(t_map *map, t_point *p, float angle);
+
+
+
+
+
+
+
+bool is_player(t_map *map, double i, double j);
+void put_square(t_map *map, int start_x, int start_y, int clr);
+int is_upper_char(char c);
+void send_rays(t_map *map);
+void put_char(t_map *map, char c, int i, int j);
+void put_wall(t_map *map);
+
+
+double rad_to_deg(double rad);
+double deg_to_rad(double deg);
+void init_direction(t_bool *dir, double beta);
+void vertic_inter(t_map *map, t_point *p, double angle);
 void init_stps(t_map *map, t_bool *dirction, long *x_stp, long *y_stp);
-void horiz_inter(t_map *map, t_point *p, float angle);
+void horiz_inter(t_map *map, t_point *p, double angle);
 void put_line(t_map *map, t_point n, t_point m, int clr);
 
 

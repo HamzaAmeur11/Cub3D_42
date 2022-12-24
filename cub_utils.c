@@ -6,18 +6,18 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:24:59 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/11 21:03:45 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/24 21:59:29 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
 
-float rad_to_deg(float rad)
+double rad_to_deg(double rad)
 {
 	return (rad * 180 / M_PI);
 }
 
-float deg_to_rad(float deg)
+double deg_to_rad(double deg)
 {
 	return (deg * M_PI / 180);
 }

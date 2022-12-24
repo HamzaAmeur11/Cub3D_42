@@ -6,81 +6,11 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/23 17:10:31 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/24 22:24:27 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
-
-
-
-
-
-bool is_player(t_map *map, float i, float j)
-{
-	float x;
-	float y;
-	float px;
-	float py;
-	
-	px = map->plr.x / TILE_SIZE;
-	py = map->plr.y / TILE_SIZE;
-	x = i / TILE_SIZE;
-	y = j / TILE_SIZE;
-	return ((x-px)*(x-px) + (y-py)*(y-py) <= 0.16 * 0.16);
-}
-
-
-
-void put_square(t_map *map, int start_x, int start_y, int clr)
-{
-	int i = start_x;
-	int j = start_y;
-
-	while (i < start_x + TILE_SIZE - 1)
-	{
-		j = start_y;
-		while (j < start_y + TILE_SIZE - 1)
-		{
-			
-			if (is_player(map, i, j))
-				mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j++, 0xFF0000);
-			else
-				mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j++, clr);
-		}
-		i++;
-	}
-}
-
-int is_upper_char(char c)
-{
-	if (c == 'E' || c == 'N' || c == 'W' || c == 'S')
-		return (EXIT_SUCCESS);
-	return (EXIT_FAILURE);
-}
-
-void put_char(t_map *map, char c, int i, int j)
-{
-	if (c == '0' || is_upper_char(c) == EXIT_SUCCESS)
-		put_square(map, i * TILE_SIZE, j * TILE_SIZE, 0x0000FF);
-	else if (c == '1')
-		put_square(map, i * TILE_SIZE, j * TILE_SIZE, 0x00FF00);
-	else if (c == ' ')
-		put_square(map, i * TILE_SIZE, j * TILE_SIZE, 0x0FFFF0);
-}
-
-void put_wall(t_map *map)
-{
-	int i = -1;
-	int j = -1;
-
-	while (map->map[++i] != NULL)
-	{
-		j = -1;
-		while (map->map[i][++j] != 0)
-			put_char(map, map->map[i][j], j, i);
-	}
-}
 
 int	dest(t_map *map, int error)
 {
@@ -89,7 +19,7 @@ int	dest(t_map *map, int error)
 	exit(error);
 }
 
-float normalize_angle(float angle)
+double normalize_angle(double angle)
 {
 	if (angle < 0)
 		angle = 360 + angle;
@@ -98,14 +28,50 @@ float normalize_angle(float angle)
 	return (angle);
 }
 
+void edit_pos_walk(t_map *map)
+{
+	double new_x;
+	double new_y;
+
+	new_x = map->plr.x + map->plr.walk * (map->plr.mov_speed) * cos(map->plr.beta);
+	new_y = map->plr.y + map->plr.walk * (map->plr.mov_speed) * sin(map->plr.beta);
+	if (map->map[(int)(new_y / TILE_SIZE)][(int)(new_x / TILE_SIZE)] == '1')
+		return ;
+	else
+	{
+		map->plr.x = new_x;	
+		map->plr.y = new_y;	
+	}
+}
+
+void edit_pos_side(t_map *map)
+{
+	double new_x;
+	double new_y;
+
+	new_x = map->plr.x + map->plr.side * (map->plr.mov_speed) * cos(((3 * M_PI) / 2) - map->plr.beta);
+	new_y = map->plr.y + map->plr.side * (map->plr.mov_speed) * sin(((3 * M_PI) / 2) - map->plr.beta);
+	if (map->map[(int)(new_y / TILE_SIZE)][(int)(new_x / TILE_SIZE)] == '1')
+		return ;
+	else
+	{
+		map->plr.x = new_x;	
+		map->plr.y = new_y;	
+	}
+}
+
 int	moves(int keycode, t_map *map)
 {
-	printf("\n\n-------------------------str\n");
-	if (keycode == UP_KEY)
+	// printf("\n\n----------%d---------------str\n", keycode);
+	if (keycode == W)
 		map->plr.walk = +1;
-	else if (keycode == DOWN_KEY)
+	else if (keycode == S)
 		map->plr.walk = -1;
-	if (keycode == RIGHT_KEY)
+	else if (keycode == A)
+		map->plr.side = -1;
+	else if (keycode == D)
+		map->plr.side = +1;
+	else if (keycode == RIGHT_KEY)
 		map->plr.turn = +1;
 	else if (keycode == LEFT_KEY)
 		map->plr.turn = -1;
@@ -116,21 +82,20 @@ int	moves(int keycode, t_map *map)
 	//update data
 	if (map->plr.turn != 0)
 	{
-		// printf("before alpha = %f\n", map->plr.alpha);
-		map->plr.alpha = normalize_angle(map->plr.alpha + (map->plr.turn * VAR));
-		// printf("after alpha = %f\n", map->plr.alpha);
+		map->plr.alpha = normalize_angle(map->plr.alpha + (map->plr.turn * map->plr.rot_speed));
 		map->plr.beta = deg_to_rad(map->plr.alpha);
-		// printf("beta + 0 < %f < %f\n", map->plr.beta, 2 * M_PI);
-		
 	}
 	//   edit x and y     //
-	// if (map->plr.walk != 0)
-	// 	edit_pos(map);
+	if (map->plr.walk != 0)
+		edit_pos_walk(map);
+	if (map->plr.side != 0)
+		edit_pos_side(map);
 	mlx_clear_window(map->mlx_.mlx_ptr, map->mlx_.win_ptr);
 	put_wall(map);
 	send_rays(map);
 	map->plr.turn = 0;
 	map->plr.walk = 0;
+	map->plr.side = 0;
 	// printf("-------------------------end\n");
 	return (EXIT_SUCCESS);
 }
@@ -150,7 +115,7 @@ double distence(t_point p, t_point q)
 	return (sqrt(((p.x - q.x) * (p.x - q.x)) + (p.y - q.y) * (p.y - q.y)));
 }
 
-void interaction_pt(t_map *map, t_point *p, float angle)
+void interaction_pt(t_map *map, t_point *p, double angle)
 {
 	t_point plr;
 	plr.x = map->plr.x;
@@ -163,10 +128,10 @@ void interaction_pt(t_map *map, t_point *p, float angle)
 	// printf("end_ver : v_x = %f && v_y = %f\n", inter_v.x, inter_v.y);
 	// printf("dis vert %f\n", distence(plr, inter_v));
 	// printf("dis hor %f\n", distence(plr, inter_h));
-	if ((inter_h.x == -1 && inter_h.y == -1) ||  inter_h.x > map->width * TILE_SIZE || inter_h.y > map->height * TILE_SIZE)
-		{/*printf("1V hor(%f , %f) >  verti (%f , %f)  ->", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*/*p = inter_v;	return;}
-	if ((inter_v.x == -1 && inter_v.y == -1) /*||  inter_v.x > map->width * TILE_SIZE || inter_v.y > map->height * TILE_SIZE*/)
-		{/*printf("2H ver(%f , %f) > hori(%f , %f)   ->", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*/*p = inter_h;	return;}
+	// if ((inter_h.x == -1 && inter_h.y == -1) ||  inter_h.x > map->width * TILE_SIZE || inter_h.y > map->height * TILE_SIZE)
+	// 	{/*printf("1V hor(%f , %f) >  verti (%f , %f)  ->", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*/*p = inter_v;	return;}
+	// if ((inter_v.x == -1 && inter_v.y == -1) /*||  inter_v.x > map->width * TILE_SIZE || inter_v.y > map->height * TILE_SIZE*/)
+	// 	{/*printf("2H ver(%f , %f) > hori(%f , %f)   ->", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*/*p = inter_h;	return;}
 	if (distence(plr, inter_h) > distence(plr, inter_v))
 		{/*printf("3V hor(%f , %f) >  verti (%f , %f)  ->", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*/*p = inter_v;}
 	else
@@ -174,39 +139,70 @@ void interaction_pt(t_map *map, t_point *p, float angle)
 			
 }
 
+
+void fct(t_map *map, double wall_height, int i)
+{
+	double top_wall;
+	double down_wall;
+	int j = -1;
+
+	top_wall = (Y_SIZE / 2) - (wall_height / 2);
+	if (top_wall < 0)
+		top_wall = 0;
+	down_wall = (Y_SIZE / 2) + (wall_height / 2);
+	if (down_wall > Y_SIZE)
+		down_wall = Y_SIZE;
+	while (++j <= Y_SIZE)
+	{
+		if (j <= top_wall)
+			mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->ce);
+		else if (j < down_wall && j > top_wall)
+			mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, 0x0);
+		else if (j >= down_wall)
+			mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->fl);
+	}
+		
+}
+
+void put_3d_map(t_map *map)
+{
+	double projec_d;
+	double wall_height;
+	
+	int  i = -1;
+	
+	while(++i <= X_SIZE)
+	{
+		projec_d = (X_SIZE / 2) / tan(FOV_R / 2);
+		wall_height = (TILE_SIZE / map->inter[i]) * projec_d;
+		fct(map, wall_height, i);
+	}
+}
+
 void send_rays(t_map *map)
 {
-	map->ray_angle = map->plr.alpha - 30;
-	t_point m,n;
-	m.x = map->plr.x;
-	m.y = map->plr.y;;
-
+	map->ray_angle = map->plr.beta - deg_to_rad(30);
+	t_point n;
+	map->plr.p.x = map->plr.x;
+	map->plr.p.y = map->plr.y;
 	// interaction_pt(map, &n, map->plr.alpha);
-	// put_line(map, m, n, 0xFF0000);
-	//ray-angle inc : FOV / Map_MAX_X
+	// put_line(map, map->plr.p, n, 0xFF0000);
 	int i = -1;
-	while (++i < X_SIZE && map->ray_angle <= 30 + map->plr.alpha)
+	while (++i < X_SIZE)
 	{
-		n.x = 0;n.y = 0;
 		interaction_pt(map, &n, map->ray_angle);
-		// printf("befor map->plr.alpha + (FOV / i) = %f\n", ray_angle);
-		map->inter[i].x = n.x;
-		map->inter[i].y = n.y;
-		//printf("inter : angle = %f \n", map->ray_angle);
-			put_line(map, m, n, 0xFF0000);
-		map->ray_angle += FOV_D / X_SIZE;
-		// printf("aftermap->plr.alpha + (FOV / i) = %f\n", f);
+		map->inter[i] = distence(map->plr.p, n);
+		/*store x and y interaction*/
+		put_line(map, map->plr.p, n, 0xFF0000);
+		map->ray_angle += FOV_R / X_SIZE;
 	}
-	// map->inter[i].x = -10;
-	// map->inter[i].y = -10;
-	// printf("map->plr.alpha + (FOV / i) = %f      FOV / X_SIZE = %f\n", ray_angle, (float)FOV / X_SIZE);
-	// printf("point inter : x ; %f y ; %f\n", n.x, n.y);
+	map->inter[i] = -10;
 }
 
 int put_2d_map(t_map *map)
 {
 	map->mlx_.mlx_ptr = mlx_init();
-	map->mlx_.win_ptr = mlx_new_window(map->mlx_.mlx_ptr, TILE_SIZE * map->width, TILE_SIZE * map->height, "---Cub3D---");
+	map->mlx_.win_ptr = mlx_new_window(map->mlx_.mlx_ptr, X_SIZE, Y_SIZE, (char *)"---Cub3D---");
 	put_wall(map);
 	send_rays(map);
 	hook(map);
