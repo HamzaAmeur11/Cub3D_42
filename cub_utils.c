@@ -3,14 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   cub_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:24:59 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/04 19:35:44 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/24 21:59:29 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
+
+double rad_to_deg(double rad)
+{
+	return (rad * 180 / M_PI);
+}
+
+double deg_to_rad(double deg)
+{
+	return (deg * M_PI / 180);
+}
+
 
 int	ft_strlen(char *str)
 {
@@ -125,17 +136,14 @@ void	ft_putstr_fd(char *s, int fd)
 
 int	ft_atoi(char *str)
 {
-	int	x;
-	int	rst;
+	int	resultat;
+	int	i;
 
-	x = 0;
-	rst = 0;
-	while ((str[x] >= 9 && str[x] <= 13) || str[x] == 32)
-		x++;
-	while (str[x] >= 48 && str[x] <= 57 && str[x] != '\0')
-	{
-		rst = rst * 10 + (str[x] - 48);
-		x++;
-	}
-	return (rst);
+	resultat = 0;
+	i = 0;
+	while (((str[i] >= 9) && (str[i] <= 13)) || (str[i] == ' '))
+		i++;
+	while ((str[i] >= '0') && (str[i] <= '9'))
+		resultat = (resultat * 10) + (str[i++] - '0');
+	return (resultat);
 }

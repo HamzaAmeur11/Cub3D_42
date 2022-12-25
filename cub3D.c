@@ -3,268 +3,223 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/04 19:31:50 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/25 17:31:53 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
 
-int	error_args(int ac)
+int	dest(t_map *map, int error)
 {
-	if (ac < 0)
-	{
-		ft_putstr_fd((char *)"The file must end in ` *.cub `\n", 2);
-		return(FAILDE);
-	}
-	else if (ac == 1)
-	{
-		ft_putstr_fd((char *)"Didn't send any arg\n", 2);
-		return (EXIT_FAILURE);
-	}
-	else
-	{
-		ft_putstr_fd((char *)"You send many args !!!\n", 2);
-		return (EXIT_FAILURE + EXIT_FAILURE);
-	}
+	ft_free(map->map);
+	mlx_destroy_window(map->mlx_.mlx_ptr, map->mlx_.win_ptr);
+	exit(error);
 }
 
-int	check_extens(char *str)
+double normalize_rad(double angle)
 {
-	int	i;
-
-	i = 0;
-	if (str[i] == '.')
-		return (FAILDE);
-	while (str[i] != 0 && str[i] != '.')
-		i++;
-	if (str[i] == 0)
-		return (FAILDE);
-	if (ft_strncmp(str + i, (char *)".cub", 5) != EXIT_SUCCESS)
-		return (FAILDE);
-	return (EXIT_SUCCESS);
+	if (angle < 0)
+		angle = (2 * M_PI) + angle;
+	if (angle >= 2 * M_PI)
+		angle = angle - (2 * M_PI);
+	return (angle);
 }
 
-
-
-char **init_file(char *file_name)
-{ 
-	char	*temp;
-	int		fd;
-	char	*gnl;
-
-	temp = NULL;
-	fd = open(file_name, O_RDWR);
-	gnl = get_next_line(fd);
-	if (gnl == NULL)
-		return (NULL);
-	while (gnl != NULL)
-	{
-		temp = ft_strjoin(temp, gnl);
-		free(gnl);
-		gnl = get_next_line(fd);
-	}
-	return (ft_split(temp, '\n'));
+double normalize_deg(double angle)
+{
+	if (angle < 0)
+		angle = 360 + angle;
+	if (angle >= 360)
+		angle = angle - 360;
+	return (angle);
 }
 
-char	*colors(char *file, int i)
+void edit_pos_walk(t_map *map)
 {
-	char	*str;
-	int		x;
+	double new_x;
+	double new_y;
 
-	x = 0;
-	str = malloc(sizeof(char) * 4);
-	while (file[i] != ',' && file[i] != '\0')
-	{
-		str[x] = file[i];
-		x++;
-		i++;
-	}
-	str[x] = '\0';
-	return (str); 
-}
-
-void	get_color(char *file, int key)
-{
-	t_map	*map = NULL;
-	int		i;
-	char	*red;
-	char	*green;
-	char	*blue;
-	
-	i = 1;
-	while (file[i] != 0 && ((file[i] >= 9 && file[i] <= 13) || file[i] == ' '))
-		i++;
-	red = colors(file, i);
-	while (file[i] != ',' && file[i] != '\0')
-		i++;
-	i += 1;
-	green = colors(file, i);
-	while (file[i] != ',' && file[i] != '\0')
-		i++;
-	i += 1;
-	blue = colors(file, i);
-	printf("R : |%s| G : |%s| B : |%s|\n", red, green, blue);
-	if (key == 0)
-	{
-		map->ce->r = ft_atoi(red);
-		map->ce->g = ft_atoi(green);
-		map->ce->b = ft_atoi(blue);
-	}
-	else if (key == 1)
-	{
-		map->fl->r = ft_atoi(red);
-		map->fl->g = ft_atoi(green);
-		map->fl->b = ft_atoi(blue);
-	}
-}
-
-void check_colors(char *file, int *check, int key)
-{
-	int i = 1;
-	while (file[i] != 0 && ((file[i] >= 9 && file[i] <= 13) || file[i] == ' '))
-		i++;
-	if (file[i] == 0)
-	{
-		*check = FAILDE;
+	new_x = map->plr.x + map->plr.walk * (map->plr.mov_speed) * cos(map->plr.beta);
+	new_y = map->plr.y + map->plr.walk * (map->plr.mov_speed) * sin(map->plr.beta);
+	if (map->map[(int)(new_y / TILE_SIZE)][(int)(new_x / TILE_SIZE)] == '1')
 		return ;
-	}
-	while (file[i] != 0 && ((file[i] >= '0' && file[i] <= '9') || file[i] == ','))
-		i++;
-	while (file[i] != 0 && ((file[i] >= 9 && file[i] <= 13) || file[i] == ' '))
-		i++;
-	if (file[i] != 0)
-		*check = FAILDE;
 	else
 	{
-		*check = EXIT_SUCCESS;
-		get_color(file, key);
+		map->plr.x = new_x;	
+		map->plr.y = new_y;	
 	}
 }
 
-void check_xpms(char *file, int *check)
+void edit_pos_side(t_map *map)
 {
-	int i = 2;
+	double new_x;
+	double new_y;
+
+	new_x = map->plr.x + map->plr.side * (map->plr.mov_speed) * cos(((3 * M_PI) / 2) - map->plr.beta);
+	new_y = map->plr.y + map->plr.side * (map->plr.mov_speed) * sin(((3 * M_PI) / 2) - map->plr.beta);
+	if (map->map[(int)(new_y / TILE_SIZE)][(int)(new_x / TILE_SIZE)] == '1')
+		return ;
+	else
+	{
+		map->plr.x = new_x;	
+		map->plr.y = new_y;	
+	}
+}
+
+int	moves(int keycode, t_map *map)
+{
+	// printf("\n\n----------%d---------------str\n", keycode);
+	if (keycode == W)
+		map->plr.walk = +1;
+	else if (keycode == S)
+		map->plr.walk = -1;
+	else if (keycode == A)
+		map->plr.side = -1;
+	else if (keycode == D)
+		map->plr.side = +1;
+	else if (keycode == RIGHT_KEY)
+		map->plr.turn = +1;
+	else if (keycode == LEFT_KEY)
+		map->plr.turn = -1;
+	else if (keycode == ESC_KEY)
+		dest(map, 1);
+	else
+		return (0);
+	//update data
+	if (map->plr.turn != 0)
+	{
+		map->plr.alpha = normalize_deg(map->plr.alpha + (map->plr.turn * map->plr.rot_speed));
+		map->plr.beta = normalize_rad(deg_to_rad(map->plr.alpha));
+	}
+	//   edit x and y     //
+	if (map->plr.walk != 0)
+		edit_pos_walk(map);
+	if (map->plr.side != 0)
+		edit_pos_side(map);
+	mlx_clear_window(map->mlx_.mlx_ptr, map->mlx_.win_ptr);
+	put_wall(map);
+	send_rays(map);
+	map->plr.turn = 0;
+	map->plr.walk = 0;
+	map->plr.side = 0;
+	// printf("-------------------------end\n");
+	return (EXIT_SUCCESS);
+}
+
+
+void	hook(t_map *map)
+{
+	mlx_hook(map->mlx_.win_ptr, 17, 0, dest, map);
+	mlx_hook(map->mlx_.win_ptr, 2, 0, moves, map);
+	mlx_loop(map->mlx_.mlx_ptr);
+}
+
+
+
+double distence(t_point p, t_point q)
+{
+	return (sqrt(((p.x - q.x) * (p.x - q.x)) + (p.y - q.y) * (p.y - q.y)));
+}
+
+void interaction_pt(t_map *map, t_point *p, double angle)
+{
+	t_point plr;
+	plr.x = map->plr.x;
+	plr.y = map->plr.y;
+	t_point inter_h;
+	t_point inter_v;
+	// printf("rad = %f && deg = %f\n", angle, rad_to_deg(angle));
+	horiz_inter(map, &inter_h, normalize_rad(angle));
+	vertic_inter(map, &inter_v, normalize_rad(angle));
+	// printf("end_hor : h_x = %f && h_y = %f\n", inter_h.x, inter_h.y);
+	// printf("end_ver : v_x = %f && v_y = %f\n", inter_v.x, inter_v.y);
+	// printf("dis vert %f\n", distence(plr, inter_v));
+	// printf("dis hor %f\n", distence(plr, inter_h));
+	// if ((inter_h.x == -1 && inter_h.y == -1) ||  inter_h.x > map->width * TILE_SIZE || inter_h.y > map->height * TILE_SIZE)
+	// 	{/*printf("1V hor(%f , %f) >  verti (%f , %f)  ->", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*/*p = inter_v;	return;}
+	// if ((inter_v.x == -1 && inter_v.y == -1) /*||  inter_v.x > map->width * TILE_SIZE || inter_v.y > map->height * TILE_SIZE*/)
+	// 	{/*printf("2H ver(%f , %f) > hori(%f , %f)   ->", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*/*p = inter_h;	return;}
+	if (distence(plr, inter_h) > distence(plr, inter_v))
+		{/*printf("3V hor(%f , %f) >  verti (%f , %f)  ->\n", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*/*p = inter_v;}
+	else
+		{/*printf("4H ver(%f , %f) > hori(%f , %f)   ->\n", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*/*p = inter_h;}
+			
+}
+
+
+void fct(t_map *map, double wall_height, int i)
+{
+	double top_wall;
+	double down_wall;
 	int j = -1;
-	while (file[i] != 0 && ((file[i] >= 9 && file[i] <= 13) || file[i] == ' '))
-		i++;
-	while (file[i] != 0)
+
+	top_wall = (Y_SIZE / 2) - (wall_height / 2);
+	if (top_wall < 0)
+		top_wall = 0;
+	down_wall = (Y_SIZE / 2) + (wall_height / 2);
+	if (down_wall > Y_SIZE)
+		down_wall = Y_SIZE;
+	while (++j <= Y_SIZE)
 	{
-		if (file[i] == '.')
-			j = i;
-		i++;
+		if (j <= top_wall)
+			mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->ce);
+		else if (j < down_wall && j > top_wall)
+			mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, 0x0);
+		else if (j >= down_wall)
+			mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->fl);
 	}
-	if (j == -1)
-		*check = FAILDE;
-	else if (ft_strncmp((char *)".xpm", file + j, 4) != EXIT_SUCCESS)
-		*check = FAILDE;	
-	else
-		*check = EXIT_SUCCESS;
+		
 }
 
-int check_check(t_check *check)
+void put_3d_map(t_map *map)
 {
-	if (check->no != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !\n", 2), EXIT_FAILURE);
-	if (check->so != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!\n", 2), EXIT_FAILURE);
-	if (check->we != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!!\n", 2), EXIT_FAILURE);
-	if (check->ea != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!!!\n", 2), EXIT_FAILURE);
-	if (check->fl != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!!!!\n", 2), EXIT_FAILURE);
-	if (check->ce != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!!!!!\n", 2), EXIT_FAILURE);
-	return (EXIT_SUCCESS);
-}
-
-int check_rgb_and_xpms(char **file, t_check *check)
-{
-	int	i = 0;
-	while (file[i] != NULL && (file[i][0] != '1' || file[i][0] !=  ' '))
+	double projec_d;
+	double wall_height;
+	
+	int  i = -1;
+	
+	while(++i <= X_SIZE)
 	{
-		if (!ft_strncmp((char *)"C", file[i], 1) && check->ce == CHECK)
-			check_colors(file[i], &check->ce, 0);
-		else if (!ft_strncmp((char *)"F", file[i], 1) && check->fl == CHECK)
-			check_colors(file[i], &check->fl, 1);
-		else if (!ft_strncmp((char *)"NO", file[i], 2) && check->no == CHECK)
-			check_xpms(file[i], &check->no);
-		else if (!ft_strncmp((char *)"SO", file[i], 2) && check->so == CHECK)
-			check_xpms(file[i], &check->so);
-		else if (!ft_strncmp((char *)"WE", file[i], 2) && check->we == CHECK)
-			check_xpms(file[i], &check->we);
-		else if (!ft_strncmp((char *)"EA", file[i], 2) && check->ea == CHECK)
-			check_xpms(file[i], &check->ea);
-		else
-			break ;
-		i++;
+		projec_d = (X_SIZE / 2) / tan(FOV_R / 2);
+		wall_height = (TILE_SIZE / map->inter[i]) * projec_d;
+		fct(map, wall_height, i);
 	}
-	if (check_check(check) != EXIT_SUCCESS)
-		return (EXIT_FAILURE);
-	return (EXIT_SUCCESS);
 }
 
-void init_check(t_check *check)
+void send_rays(t_map *map)
 {
-	check->no = CHECK;
-	check->so = CHECK;
-	check->we = CHECK;
-	check->ea = CHECK;
-	check->map = CHECK;
-	check->fl = CHECK;
-	check->ce = CHECK;
+	map->ray_angle = map->plr.beta - deg_to_rad(30);
+	t_point n;
+	map->plr.p.x = map->plr.x;
+	map->plr.p.y = map->plr.y;
+	printf("rad : %f && deg %f\n", map->plr.beta, map->plr.alpha);
+	// interaction_pt(map, &n, map->plr.beta);
+	// put_line(map, map->plr.p, n, 0xFF0000);
+	int i = -1;
+	while (++i < X_SIZE)
+	{
+		interaction_pt(map, &n, normalize_rad(map->ray_angle));
+		map->inter[i] = distence(map->plr.p, n);
+		/*store x and y interaction*/
+
+		put_line(map, map->plr.p, n, 0xFF0000);
+		map->ray_angle += FOV_R / X_SIZE;
+	}
+	map->inter[i] = -10;
+	// put_3d_map(map);
 }
 
-// int check_map(char **file, t_check *check)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (file[i] != NULL && (file[i][0] != '1' || file[i][0] !=  ' '))
-// 		i++;
-	
-// }
-
-int check_file(t_map *map, char **file)
+int put_2d_map(t_map *map)
 {
-	t_check check;
-	
-	init_check(&check);
-	if (check_rgb_and_xpms(file, &check) != EXIT_SUCCESS)
-		return (EXIT_FAILURE);
-	if (check_map_elmnt(file, &check) != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)"Sntx Error Map\n", 2), EXIT_FAILURE);
-	if (check_map_walls(map, file) != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)"Wall Error Map\n", 2), EXIT_FAILURE);
-	return (EXIT_SUCCESS);
-}
-
-// void init_map(t_map *map, char **file)
-// {
-// }
-
-int	parse_map(t_map *map, char *file_name)
-{
-	char **file;
-	(void)map;
-	if (check_extens(file_name) != EXIT_SUCCESS)
-		return (error_args(FAILDE), FAILDE);
-	file = NULL;
-	file = init_file(file_name);
-	if (file == NULL)//protect NULL IN file to the next fct
-		return (ft_putstr_fd((char *)"Empty File !!!\n", 2) ,EXIT_FAILURE);
-	if (check_file(map, file) != EXIT_SUCCESS)
-		return(EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+	map->mlx_.mlx_ptr = mlx_init();
+	map->mlx_.win_ptr = mlx_new_window(map->mlx_.mlx_ptr, X_SIZE, Y_SIZE, (char *)"---Cub3D---");
+	put_wall(map);
+	send_rays(map);
+	hook(map);
+	return (0);
 }
 
 int main(int ac, char **av)
@@ -275,7 +230,8 @@ int main(int ac, char **av)
 		return(error_args(ac));
 	if (parse_map(&map, av[1]) != EXIT_SUCCESS)
 		return (FAILDE);
-	int i = 0;
-	while (map.map[i])
-		printf("---->>>>%s|\n", map.map[i++]);
+	ft_resulotion(&map);
+	print_tmap(map);
+	if (put_2d_map(&map) != EXIT_SUCCESS)
+		return (FAILDE);
 }
