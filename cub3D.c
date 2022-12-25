@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/25 17:31:53 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/25 18:08:57 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,15 +176,17 @@ void fct(t_map *map, double wall_height, int i)
 
 void put_3d_map(t_map *map)
 {
+	
 	double projec_d;
 	double wall_height;
-	
+	double d_ray;
 	int  i = -1;
 	
 	while(++i <= X_SIZE)
 	{
+		d_ray = map->inter[i] * cos(map->ray_angl[i] - map->plr.beta);
 		projec_d = (X_SIZE / 2) / tan(FOV_R / 2);
-		wall_height = (TILE_SIZE / map->inter[i]) * projec_d;
+		wall_height = (TILE_SIZE / d_ray) * projec_d;
 		fct(map, wall_height, i);
 	}
 }
@@ -203,13 +205,14 @@ void send_rays(t_map *map)
 	{
 		interaction_pt(map, &n, normalize_rad(map->ray_angle));
 		map->inter[i] = distence(map->plr.p, n);
+		map->ray_angl[i] = map->ray_angle;
 		/*store x and y interaction*/
 
 		put_line(map, map->plr.p, n, 0xFF0000);
 		map->ray_angle += FOV_R / X_SIZE;
 	}
 	map->inter[i] = -10;
-	// put_3d_map(map);
+	put_3d_map(map);
 }
 
 int put_2d_map(t_map *map)

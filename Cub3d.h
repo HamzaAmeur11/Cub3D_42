@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/25 17:31:04 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/25 18:04:37 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ typedef struct t_map
 	char	*ea;
 	double	ray_angle;
 	double inter[X_SIZE];
+	double ray_angl[X_SIZE];
 }	t_map;
 
 typedef struct t_check
