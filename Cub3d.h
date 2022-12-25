@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/24 22:03:45 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/25 17:31:04 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ int is_upper_char(char c);
 
 
 
-
+double normalize_rad(double angle);
 
 
 

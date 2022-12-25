@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/24 22:24:27 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/25 17:31:53 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,16 @@ int	dest(t_map *map, int error)
 	exit(error);
 }
 
-double normalize_angle(double angle)
+double normalize_rad(double angle)
+{
+	if (angle < 0)
+		angle = (2 * M_PI) + angle;
+	if (angle >= 2 * M_PI)
+		angle = angle - (2 * M_PI);
+	return (angle);
+}
+
+double normalize_deg(double angle)
 {
 	if (angle < 0)
 		angle = 360 + angle;
@@ -82,8 +91,8 @@ int	moves(int keycode, t_map *map)
 	//update data
 	if (map->plr.turn != 0)
 	{
-		map->plr.alpha = normalize_angle(map->plr.alpha + (map->plr.turn * map->plr.rot_speed));
-		map->plr.beta = deg_to_rad(map->plr.alpha);
+		map->plr.alpha = normalize_deg(map->plr.alpha + (map->plr.turn * map->plr.rot_speed));
+		map->plr.beta = normalize_rad(deg_to_rad(map->plr.alpha));
 	}
 	//   edit x and y     //
 	if (map->plr.walk != 0)
@@ -122,8 +131,9 @@ void interaction_pt(t_map *map, t_point *p, double angle)
 	plr.y = map->plr.y;
 	t_point inter_h;
 	t_point inter_v;
-	horiz_inter(map, &inter_h, normalize_angle(angle));
-	vertic_inter(map, &inter_v, normalize_angle(angle));
+	// printf("rad = %f && deg = %f\n", angle, rad_to_deg(angle));
+	horiz_inter(map, &inter_h, normalize_rad(angle));
+	vertic_inter(map, &inter_v, normalize_rad(angle));
 	// printf("end_hor : h_x = %f && h_y = %f\n", inter_h.x, inter_h.y);
 	// printf("end_ver : v_x = %f && v_y = %f\n", inter_v.x, inter_v.y);
 	// printf("dis vert %f\n", distence(plr, inter_v));
@@ -133,9 +143,9 @@ void interaction_pt(t_map *map, t_point *p, double angle)
 	// if ((inter_v.x == -1 && inter_v.y == -1) /*||  inter_v.x > map->width * TILE_SIZE || inter_v.y > map->height * TILE_SIZE*/)
 	// 	{/*printf("2H ver(%f , %f) > hori(%f , %f)   ->", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*/*p = inter_h;	return;}
 	if (distence(plr, inter_h) > distence(plr, inter_v))
-		{/*printf("3V hor(%f , %f) >  verti (%f , %f)  ->", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*/*p = inter_v;}
+		{/*printf("3V hor(%f , %f) >  verti (%f , %f)  ->\n", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*/*p = inter_v;}
 	else
-		{/*printf("4H ver(%f , %f) > hori(%f , %f)   ->", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*/*p = inter_h;}
+		{/*printf("4H ver(%f , %f) > hori(%f , %f)   ->\n", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*/*p = inter_h;}
 			
 }
 
@@ -185,18 +195,21 @@ void send_rays(t_map *map)
 	t_point n;
 	map->plr.p.x = map->plr.x;
 	map->plr.p.y = map->plr.y;
-	// interaction_pt(map, &n, map->plr.alpha);
+	printf("rad : %f && deg %f\n", map->plr.beta, map->plr.alpha);
+	// interaction_pt(map, &n, map->plr.beta);
 	// put_line(map, map->plr.p, n, 0xFF0000);
 	int i = -1;
 	while (++i < X_SIZE)
 	{
-		interaction_pt(map, &n, map->ray_angle);
+		interaction_pt(map, &n, normalize_rad(map->ray_angle));
 		map->inter[i] = distence(map->plr.p, n);
 		/*store x and y interaction*/
+
 		put_line(map, map->plr.p, n, 0xFF0000);
 		map->ray_angle += FOV_R / X_SIZE;
 	}
 	map->inter[i] = -10;
+	// put_3d_map(map);
 }
 
 int put_2d_map(t_map *map)
