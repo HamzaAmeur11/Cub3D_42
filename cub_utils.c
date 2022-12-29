@@ -6,11 +6,22 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:24:59 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/05 13:47:17 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/24 21:59:29 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
+
+double rad_to_deg(double rad)
+{
+	return (rad * 180 / M_PI);
+}
+
+double deg_to_rad(double deg)
+{
+	return (deg * M_PI / 180);
+}
+
 
 int	ft_strlen(char *str)
 {

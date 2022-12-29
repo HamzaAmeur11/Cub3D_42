@@ -6,7 +6,7 @@
 #    By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/29 13:48:25 by hameur            #+#    #+#              #
-#    Updated: 2022/12/19 20:43:27 by megrisse         ###   ########.fr        #
+#    Updated: 2022/12/26 19:53:45 by megrisse         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,16 +18,19 @@ HEADER	:=	Cub3d.h
 
 CC	:=	gcc
 
-CFLAGS	:=	-W -W -W -lmlx -O3 -framework OpenGL -framework AppKit
+CFLAGS	:=	-Wall -Wextra -Werror
+
+MLXFLAGS := -lmlx -framework OpenGL -framework AppKit
 
 SRC	:=	cub3D.c \
 		cub_utils.c \
 		ft_split.c \
 		gnl.c \
 		check_map.c \
-		moves.c \
-		error.c \
-		draw.c \
+		parse_map.c \
+		find_interaction.c \
+		put_map.c \
+		textures.c \
 
 OBJS	:=	$(SRC:.c=.o)
 
@@ -35,7 +38,7 @@ all : $(NAME)
 	@echo "Making Cub3D"
 
 $(NAME) : $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(MLXFLAGS) $(OBJS) -o $(NAME)
 
 %.o : %.c $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@

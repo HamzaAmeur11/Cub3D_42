@@ -3,21 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   check_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/19 20:37:45 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/24 19:01:18 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
 
+void ft_free(char **str)
+{
+	int i;
+
+	i = -1;
+	while(str[++i])
+		free(str[i]);
+	free(str);
+}
+
+void init_pos(t_plr *plr, int x, int y, char c)
+{
+	plr->x = (x + 0.5) * TILE_SIZE;
+	plr->y = (y + 0.5) * TILE_SIZE;
+	plr->turn = 0;
+	plr->walk = 0;
+	plr->side = 0;
+	plr->mov_speed = SPEED;
+	plr->rot_speed = ROOOT;
+	if (c == 'N')
+		plr->alpha = 270, plr->beta = (3 * M_PI) / 2;
+	else if (c == 'W')
+		plr->alpha = 180, plr->beta = M_PI;
+	else if (c == 'E')
+		plr->alpha = 0, plr->beta = 0;
+	else if (c == 'S')
+		plr->alpha = 90, plr->beta = M_PI / 2;
+	
+}
+
 int	map_elements(char c)
 {
-	if (c == '1' || c == '0' || c == 'N' || c == ' ')
+	static int i;
+	
+	if (c == '1' || c == '0'  || c == ' ')
 		return (EXIT_SUCCESS);
-	if (c == 'S' || c == 'E' || c == 'W' || c == 'F')//F in map bonus
-		return (EXIT_SUCCESS);
+	if ((c == 'S' || c == 'E' || c == 'W' || c == 'N') && i == 0)//F in map bonus
+		return (i++, EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }
 
@@ -35,7 +67,7 @@ int	check_map_elmnt(char **file, t_check *check)
 		while (file[i][j])
 		{
 			if (map_elements(file[i][j]) == EXIT_FAILURE)
-				return (check->map = FAILDE, EXIT_FAILURE);
+				return (check->map = FAILDE, ft_putstr_fd((char *)"Char incorr!!!\n", 2), EXIT_FAILURE);
 			j++;
 		}
 		i++;
@@ -133,25 +165,6 @@ int vertical_check(char **map)
 	return (EXIT_SUCCESS);
 }
 
-void init_pos(t_plr *plr, int x, int y, char c)
-{
-	plr->x = x;
-	plr->y = y;
-	printf("init  x ==> %f y ==> %f\n", plr->x, plr->y);
-	plr->turn = 0;
-	plr->walk = 0;
-	plr->mov_speed = 0.1;
-	plr->rot_speed = 2 * (M_PI / 180);
-	if (c == 'N')
-		plr->alpha = M_PI / 2;
-	else if (c == 'W')
-		plr->alpha = M_PI;
-	else if (c == 'E')
-		plr->alpha = 0;
-	else
-		plr->alpha = 3  * M_PI / 2;
-}
-
 void init_player_pos(t_map *map)
 {
 	int i = 0, j = 0;
@@ -160,7 +173,7 @@ void init_player_pos(t_map *map)
 		j = 0;
 		while (map->map[i][j] != 0)
 		{
-			if (map->map[i][j] == 'N' || map->map[i][j] == 'W' || map->map[i][j] == 'S' || map->map[i][j] == 'E')
+			if (is_upper_char(map->map[i][j]) == EXIT_SUCCESS)
 				init_pos(&map->plr, j, i, map->map[i][j]);
 			j++;
 		}
