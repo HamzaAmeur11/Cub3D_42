@@ -6,6 +6,7 @@
 *.ko
 *.obj
 *.elf
+Cub3D_en_sub.pdf
 
 # Linker output
 *.ilk
