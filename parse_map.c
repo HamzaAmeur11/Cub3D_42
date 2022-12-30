@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 19:04:13 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/30 19:12:56 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/30 21:38:49 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ char **init_file(char *file_name)
 	char	*temp;
 	int		fd;
 	char	*gnl;
+	char	**sp;
 
 	temp = NULL;
 	fd = open(file_name, O_RDWR);
@@ -66,7 +67,8 @@ char **init_file(char *file_name)
 		free(gnl);
 		gnl = get_next_line(fd);
 	}
-	return (ft_split(temp, '\n'));
+	sp = ft_split(temp, '\n');
+	return (free(temp), sp);
 }
 
 void check_colors(char *file, int *check)

@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/30 18:59:42 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/30 23:40:33 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 #define SPEED 10
 #define ROOOT 5
 
-#define TILE_SIZE 10
+#define TILE_SIZE 32
 #define X_SIZE 1200
 #define Y_SIZE 720
 #define FOV_D 60.0
@@ -151,22 +151,22 @@ int		check_map_walls(t_map *maps, char **file);
 char	**alloc_map(char **fl, int s, int i, int j);
 char	**init_map(char **file);
 void	ft_resulotion(t_map *map);
-void print_tmap(t_map map);
-int	parse_map(t_map *map, char *file_name);
-int check_file(t_map *map, char **file);
-int init_xpm_clr(t_map *map, char **file);
-int init_colors(char *str);
-int init_rgb(char *str, int *r, int *g, int *b);
-char *init_xpms(char *str);
-void init_check(t_check *check);
-int check_rgb_and_xpms(char **file, t_check *check);
-int check_check(t_check *check);
-void check_xpms(char *file, int *check);
-void check_colors(char *file, int *check);
-char **init_file(char *file_name);
-int	check_extens(char *str);
-int	error_args(int ac);
-int is_upper_char(char c);
+void	print_tmap(t_map map);
+int		parse_map(t_map *map, char *file_name);
+int		check_file(t_map *map, char **file);
+int		init_xpm_clr(t_map *map, char **file);
+int		init_colors(char *str);
+int		init_rgb(char *str, int *r, int *g, int *b);
+char	*init_xpms(char *str);
+void	init_check(t_check *check);
+int		check_rgb_and_xpms(char **file, t_check *check);
+int		check_check(t_check *check);
+void	check_xpms(char *file, int *check);
+void	check_colors(char *file, int *check);
+char	**init_file(char *file_name);
+int		check_extens(char *str);
+int		error_args(int ac);
+int		is_upper_char(char c);
 
 
 

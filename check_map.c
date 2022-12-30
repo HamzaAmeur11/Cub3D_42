@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/24 19:01:18 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/30 23:48:07 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,12 @@ void init_pos(t_plr *plr, int x, int y, char c)
 		plr->alpha = 0, plr->beta = 0;
 	else if (c == 'S')
 		plr->alpha = 90, plr->beta = M_PI / 2;
-	
 }
 
 int	map_elements(char c)
 {
 	static int i;
-	
+
 	if (c == '1' || c == '0'  || c == ' ')
 		return (EXIT_SUCCESS);
 	if ((c == 'S' || c == 'E' || c == 'W' || c == 'N') && i == 0)//F in map bonus

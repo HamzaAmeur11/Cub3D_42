@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/30 19:02:11 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/30 23:49:31 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,35 @@ double normalize_deg(double angle)
 	return (angle);
 }
 
+int    up_2_wall(t_map *map, double x, double y, double angle)
+{
+    if (angle >= 0 && angle < 90)
+        if (map->map[(int)(map->plr.y / TILE_SIZE)][(int)(map->plr.x / TILE_SIZE) + 1] == '1' && 
+            map->map[(int)(map->plr.y / TILE_SIZE) + 1][(int)(map->plr.x / TILE_SIZE)] == '1' && 
+			map->map[(int)(y / TILE_SIZE)][(int)(x / TILE_SIZE) - 1] == '1' && 
+            map->map[(int)(y / TILE_SIZE) - 1][(int)(x / TILE_SIZE)] == '1')
+                return (EXIT_FAILURE);
+    if (angle >= 90 && angle < 180)
+        if (map->map[(int)(map->plr.y / TILE_SIZE)][(int)(map->plr.x / TILE_SIZE) - 1] == '1' && 
+            map->map[(int)(map->plr.y / TILE_SIZE) + 1][(int)(map->plr.x / TILE_SIZE)] == '1' &&
+			map->map[(int)(y / TILE_SIZE)][(int)(x / TILE_SIZE) + 1] == '1' && 
+            map->map[(int)(y / TILE_SIZE) - 1][(int)(x / TILE_SIZE)] == '1')
+                return (EXIT_FAILURE);
+    if (angle >= 180 && angle < 270)
+        if (map->map[(int)(map->plr.y / TILE_SIZE) - 1][(int)(map->plr.x / TILE_SIZE)] == '1' && 
+            map->map[(int)(map->plr.y / TILE_SIZE)][(int)(map->plr.x / TILE_SIZE) - 1] == '1' &&
+			map->map[(int)(y / TILE_SIZE) + 1][(int)(x / TILE_SIZE)] == '1' && 
+            map->map[(int)(y / TILE_SIZE)][(int)(x / TILE_SIZE) + 1] == '1')
+                return (EXIT_FAILURE);
+    if (angle >= 270 && angle < 360)
+        if (map->map[(int)(map->plr.y / TILE_SIZE)][(int)(map->plr.x / TILE_SIZE) + 1] == '1' && 
+            map->map[(int)(map->plr.y / TILE_SIZE) - 1][(int)(map->plr.x / TILE_SIZE)] == '1' &&
+			map->map[(int)(y / TILE_SIZE)][(int)(x / TILE_SIZE) - 1] == '1' && 
+            map->map[(int)(y / TILE_SIZE) + 1][(int)(x / TILE_SIZE)] == '1')
+                return (EXIT_FAILURE);
+    return (EXIT_SUCCESS);
+}
+
 void edit_pos_walk(t_map *map)
 {
 	double new_x;
@@ -46,6 +75,8 @@ void edit_pos_walk(t_map *map)
 	new_y = map->plr.y + map->plr.walk * (map->plr.mov_speed) * sin(map->plr.beta);
 	if (map->map[(int)(new_y / TILE_SIZE)][(int)(new_x / TILE_SIZE)] == '1')
 		return ;
+	else if (up_2_wall(map, new_x, new_y, map->plr.alpha) != EXIT_SUCCESS && map->plr.walk > 0)
+		{printf("pppppppppp\n");return ;}
 	else
 	{
 		map->plr.x = new_x;	
