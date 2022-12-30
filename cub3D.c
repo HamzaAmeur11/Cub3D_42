@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/30 15:23:39 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/30 19:02:11 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,11 @@ int	moves(int keycode, t_map *map)
 		dest(map, 1);
 	else
 		return (0);
-	//update data
 	if (map->plr.turn != 0)
 	{
 		map->plr.alpha = normalize_deg(map->plr.alpha + (map->plr.turn * map->plr.rot_speed));
 		map->plr.beta = normalize_rad(deg_to_rad(map->plr.alpha));
 	}
-	//   edit x and y     //
 	if (map->plr.walk != 0)
 		edit_pos_walk(map);
 	if (map->plr.side != 0)
@@ -129,11 +127,9 @@ int	hook(t_map *map)
 {
 	mlx_hook(map->mlx_.win_ptr, 17, 0, dest, map);
 	mlx_hook(map->mlx_.win_ptr, 2, 0, moves, map);
-	mlx_hook(map->mlx_.mlx_ptr, 3, 0, key_realesed, map);
+	// mlx_hook(map->mlx_.mlx_ptr, 3, 0, key_realesed, map);
 	return (EXIT_SUCCESS);
 }
-
-
 
 double distence(t_point p, t_point q)
 {
@@ -156,7 +152,6 @@ void interaction_pt(t_map *map, t_point *p, double angle)
 			
 }
 
-
 void	put_texture(t_map *map, int i, int *j, double walltop, double down, double top)
 {
 	int	color;
@@ -165,7 +160,7 @@ void	put_texture(t_map *map, int i, int *j, double walltop, double down, double 
 	int	wallstrip;
 	
 	wallstrip = (int)walltop;
-	tmp = map->west.addr;
+	tmp = map->south.addr;
 	if (map->inter_p[i].pos)//vertical
 		map->offsetx = (int)map->inter_p[i].y % TILE_SIZE;
 	else if (!map->inter_p[i].pos)//hor
@@ -173,8 +168,8 @@ void	put_texture(t_map *map, int i, int *j, double walltop, double down, double 
 	while ((*j)++ > top && (*j) < down)
 	{
 		dis = (*j) + ((wallstrip / 2) - (Y_SIZE / 2));
-		map->offsety = dis * ((float)map->west.h / wallstrip);
-		color = tmp[(map->west.w * map->offsety) + map->offsetx];
+		map->offsety = dis * ((float)map->south.h / wallstrip);
+		color = tmp[(map->south.w * map->offsety) + map->offsetx];
 		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, *j, color);
 	}
 }
@@ -226,7 +221,6 @@ void send_rays(t_map *map)
 	{
 		interaction_pt(map, &n, normalize_rad(map->ray_angle));
 		map->inter[i] = distence(map->plr.p, n);
-		/*store x and y interaction*/
 		map->ray_angl[i] = map->ray_angle;
 		// put_line(map, map->plr.p, n, 0xFF0000);
 		map->inter_p[i].x = n.x;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:24:59 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/24 21:59:29 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/30 19:15:39 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	while (s2[j] != 0)
 		p[i++] = s2[j++];
 	p[i] = 0;
+	free(s1);
 	return (p);
 }
 

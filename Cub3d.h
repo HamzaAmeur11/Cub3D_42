@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/29 17:24:18 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/30 18:59:42 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 #define SPEED 10
 #define ROOOT 5
 
-#define TILE_SIZE 32
+#define TILE_SIZE 10
 #define X_SIZE 1200
 #define Y_SIZE 720
 #define FOV_D 60.0
