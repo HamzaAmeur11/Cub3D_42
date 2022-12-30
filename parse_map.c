@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 19:04:13 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/27 22:08:35 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/30 15:36:41 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,6 @@ int check_file(t_map *map, char **file)
 	return (EXIT_SUCCESS);
 }
 
-
 int	parse_map(t_map *map, char *file_name)
 {
 	char **file;
@@ -269,8 +268,8 @@ int	parse_map(t_map *map, char *file_name)
 	if (file == NULL)//protect NULL IN file to the next fct
 		return (ft_putstr_fd((char *)"Empty File !!!\n", 2) ,EXIT_FAILURE);
 	if (check_file(map, file) != EXIT_SUCCESS)
-		return(EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+		return(ft_free(file), EXIT_FAILURE);
+	return (ft_free(file), EXIT_SUCCESS);
 }
 
 void print_tmap(t_map map)

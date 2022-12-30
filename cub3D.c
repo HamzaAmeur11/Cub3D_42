@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/29 17:19:07 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/30 15:23:39 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void edit_pos_side(t_map *map)
 
 int	moves(int keycode, t_map *map)
 {
-	// printf("\n\n----------%d---------------str\n", keycode);
 	if (keycode == W)
 		map->plr.walk = +1;
 	else if (keycode == S)
@@ -105,7 +104,6 @@ int	moves(int keycode, t_map *map)
 	map->plr.turn = 0;
 	map->plr.walk = 0;
 	map->plr.side = 0;
-	// printf("-------------------------end\n");
 	put_3d_map(map);
 	return (EXIT_SUCCESS);
 }
@@ -149,21 +147,12 @@ void interaction_pt(t_map *map, t_point *p, double angle)
 	plr.y = map->plr.y;
 	t_point inter_h;
 	t_point inter_v;
-	// printf("rad = %f && deg = %f\n", angle, rad_to_deg(angle));
 	horiz_inter(map, &inter_h, normalize_rad(angle));
 	vertic_inter(map, &inter_v, normalize_rad(angle));
-	// printf("end_hor : h_x = %f && h_y = %f\n", inter_h.x, inter_h.y);
-	// printf("end_ver : v_x = %f && v_y = %f\n", inter_v.x, inter_v.y);
-	// printf("dis vert %f\n", distence(plr, inter_v));
-	// printf("dis hor %f\n", distence(plr, inter_h));
-	// if ((inter_h.x == -1 && inter_h.y == -1) ||  inter_h.x > map->width * TILE_SIZE || inter_h.y > map->height * TILE_SIZE)
-	// 	{/*printf("1V hor(%f , %f) >  verti (%f , %f)  ->", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*/*p = inter_v;	return;}
-	// if ((inter_v.x == -1 && inter_v.y == -1) /*||  inter_v.x > map->width * TILE_SIZE || inter_v.y > map->height * TILE_SIZE*/)
-	// 	{/*printf("2H ver(%f , %f) > hori(%f , %f)   ->", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*/*p = inter_h;	return;}
 	if (distence(plr, inter_h) > distence(plr, inter_v))
-		{/*printf("3V hor(%f , %f) >  verti (%f , %f)  ->\n", inter_h.x, inter_h.y, inter_v.x, inter_v.y);*/*p = inter_v;}
+		*p = inter_v;
 	else
-		{/*printf("4H ver(%f , %f) > hori(%f , %f)   ->\n", inter_v.x, inter_v.y, inter_h.x, inter_h.y);*/*p = inter_h;}
+		*p = inter_h;
 			
 }
 
@@ -176,23 +165,18 @@ void	put_texture(t_map *map, int i, int *j, double walltop, double down, double 
 	int	wallstrip;
 	
 	wallstrip = (int)walltop;
-	tmp = map->north.addr;
-	// printf("======>%d\n", map->inter_p[i].pos);
+	tmp = map->west.addr;
 	if (map->inter_p[i].pos)//vertical
 		map->offsetx = (int)map->inter_p[i].y % TILE_SIZE;
 	else if (!map->inter_p[i].pos)//hor
 		map->offsetx = (int)map->inter_p[i].x % TILE_SIZE;
-	// map->offsetx -= floor(map->offsetx);
-	// map->offsetx *= map->west.w;
 	while ((*j)++ > top && (*j) < down)
 	{
 		dis = (*j) + ((wallstrip / 2) - (Y_SIZE / 2));
-		map->offsety = dis * ((float)map->north.h / wallstrip);
-		color = tmp[(map->north.w * map->offsety) + map->offsetx];
+		map->offsety = dis * ((float)map->west.h / wallstrip);
+		color = tmp[(map->west.w * map->offsety) + map->offsetx];
 		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, *j, color);
 	}
-	// map->offsety = (i - walltop) * (TILE_SIZE / proj);
-	// color = map->west.addr[(TILE_SIZE * map->offsety) + map->offsetx];
 }
 
 void fct(t_map *map, double wall_height, int i)
@@ -206,25 +190,8 @@ void fct(t_map *map, double wall_height, int i)
 	down_wall = (Y_SIZE / 2) + (wall_height / 2);
 	if (down_wall > Y_SIZE)
 		down_wall = Y_SIZE;
-	// while (++j <= Y_SIZE)
-	// {
-	// 	if (j <= top_wall)
-	// 		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->ce);
-	// 	else if (j < down_wall && j > top_wall)
-	// 		put_texture(map, i, j, wall_height, down_wall, top_wall);
-	// 	else if (j >= down_wall)
-	// 		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->fl);
-	// }
     while (++j <= top_wall)
         mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->ce);
-    // if (!map->inter_p[i].pos)
-    //     map->offsetx = map->inter_p[i].x / TILE_SIZE;
-    // else
-    //     map->offsetx = map->inter_p[i].y / TILE_SIZE;
-    // while (++j < down_wall && j > top_wall)
-    // {
-    //     map->offsety = (++j - top_wall);
-    // }
 	put_texture(map, i, &j, wall_height, down_wall, top_wall);
     while (j++ < Y_SIZE)
         mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->fl);
@@ -253,8 +220,6 @@ void send_rays(t_map *map)
 	t_point n;
 	map->plr.p.x = map->plr.x;
 	map->plr.p.y = map->plr.y;
-	// printf("rad : %f && deg %f\n", map->plr.beta, map->plr.alpha);
-	// interaction_pt(map, &n, map->plr.beta);
 	// put_line(map, map->plr.p, n, 0xFF0000);
 	int i = -1;
 	while (++i < X_SIZE)
@@ -278,7 +243,6 @@ int put_2d_map(t_map *map)
 	map->mlx_.win_ptr = mlx_new_window(map->mlx_.mlx_ptr, X_SIZE, Y_SIZE, (char *)"---Cub3D---");
 	// put_wall(map);
 	send_rays(map);
-	// hook(map);
 	return (0);
 }
 
