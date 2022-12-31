@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/30 23:49:31 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/31 02:47:37 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,20 +104,20 @@ int	moves(int keycode, t_map *map)
 {
 	if (keycode == W)
 		map->plr.walk = +1;
-	else if (keycode == S)
+	if (keycode == S)
 		map->plr.walk = -1;
-	else if (keycode == A)
+	if (keycode == A)
 		map->plr.side = -1;
-	else if (keycode == D)
+	if (keycode == D)
 		map->plr.side = +1;
-	else if (keycode == RIGHT_KEY)
+	if (keycode == RIGHT_KEY)
 		map->plr.turn = +1;
-	else if (keycode == LEFT_KEY)
+	if (keycode == LEFT_KEY)
 		map->plr.turn = -1;
-	else if (keycode == ESC_KEY)
+	if (keycode == ESC_KEY)
 		dest(map, 1);
-	else
-		return (0);
+	// else
+	// 	return (0);
 	if (map->plr.turn != 0)
 	{
 		map->plr.alpha = normalize_deg(map->plr.alpha + (map->plr.turn * map->plr.rot_speed));
@@ -133,7 +133,7 @@ int	moves(int keycode, t_map *map)
 	map->plr.turn = 0;
 	map->plr.walk = 0;
 	map->plr.side = 0;
-	put_3d_map(map);
+	// put_3d_map(map);
 	return (EXIT_SUCCESS);
 }
 
@@ -183,19 +183,39 @@ void interaction_pt(t_map *map, t_point *p, double angle)
 			
 }
 
+void init_texture(t_map *map, int i, int **tmp)
+{
+	if (map->ray_angl[i] >= 0 && map->ray_angl[i] < M_PI / 2 && map->inter_p[i].pos)
+		*tmp = map->west.addr;
+	else if (map->ray_angl[i] >= 0 && map->ray_angl[i] < M_PI / 2 && !map->inter_p[i].pos)
+		*tmp = map->north.addr;
+	else if (map->ray_angl[i] >= M_PI / 2 && map->ray_angl[i] < M_PI && map->inter_p[i].pos)
+		*tmp = map->east.addr;
+	else if (map->ray_angl[i] >= M_PI / 2 && map->ray_angl[i] < M_PI && !map->inter_p[i].pos)
+		*tmp = map->north.addr;
+	else if (map->ray_angl[i] >= M_PI && map->ray_angl[i] < (3 * M_PI) / 2 && map->inter_p[i].pos)
+		*tmp = map->east.addr;
+	else if (map->ray_angl[i] >= M_PI && map->ray_angl[i] < (3 * M_PI) / 2 && !map->inter_p[i].pos)
+		*tmp = map->south.addr;
+	else if (map->ray_angl[i] >= (3 * M_PI) / 2 && map->ray_angl[i] < 2 * M_PI && map->inter_p[i].pos)
+		*tmp = map->west.addr;
+	else if (map->ray_angl[i] >= (3 * M_PI) / 2 && map->ray_angl[i] < 2 * M_PI && !map->inter_p[i].pos)
+		*tmp = map->south.addr;
+}
+
 void	put_texture(t_map *map, int i, int *j, double walltop, double down, double top)
 {
 	int	color;
-	int	*tmp;
+	int	*tmp = map->north.addr;
 	int	dis;
 	int	wallstrip;
 	
 	wallstrip = (int)walltop;
-	tmp = map->south.addr;
 	if (map->inter_p[i].pos)//vertical
 		map->offsetx = (int)map->inter_p[i].y % TILE_SIZE;
 	else if (!map->inter_p[i].pos)//hor
 		map->offsetx = (int)map->inter_p[i].x % TILE_SIZE;
+	init_texture(map, i, &tmp);
 	while ((*j)++ > top && (*j) < down)
 	{
 		dis = (*j) + ((wallstrip / 2) - (Y_SIZE / 2));
@@ -240,6 +260,18 @@ void put_3d_map(t_map *map)
 	}
 }
 
+void put_3d_map_(t_map *map,int i, double ray_angle, double distence)
+{
+	double projec_d;
+	double wall_height;
+	double d_ray;
+
+		d_ray = distence * cos(ray_angle - map->plr.beta);
+		projec_d = (X_SIZE / 2) / tan(FOV_R / 2);
+		wall_height = (TILE_SIZE / d_ray) * projec_d;
+		fct(map, wall_height, i);
+}
+
 void send_rays(t_map *map)
 {
 	map->ray_angle = map->plr.beta - deg_to_rad(30);
@@ -252,20 +284,18 @@ void send_rays(t_map *map)
 	{
 		interaction_pt(map, &n, normalize_rad(map->ray_angle));
 		map->inter[i] = distence(map->plr.p, n);
-		map->ray_angl[i] = map->ray_angle;
 		// put_line(map, map->plr.p, n, 0xFF0000);
+		map->ray_angl[i] = normalize_rad(map->ray_angle);
 		map->inter_p[i].x = n.x;
 		map->inter_p[i].y = n.y;
 		map->inter_p[i].pos = n.pos;
+		put_3d_map_(map, i, map->ray_angle, distence(map->plr.p, n));
 		map->ray_angle += FOV_R / X_SIZE;
 	}
-	map->inter[i] = -10;
 }
 
 int put_2d_map(t_map *map)
 {
-	map->mlx_.mlx_ptr = mlx_init();
-	map->mlx_.win_ptr = mlx_new_window(map->mlx_.mlx_ptr, X_SIZE, Y_SIZE, (char *)"---Cub3D---");
 	// put_wall(map);
 	send_rays(map);
 	return (0);
@@ -279,12 +309,14 @@ int main(int ac, char **av)
 		return(error_args(ac));
 	if (parse_map(&map, av[1]) != EXIT_SUCCESS)
 		return (FAILDE);
+	map.mlx_.mlx_ptr = mlx_init();
+	map.mlx_.win_ptr = mlx_new_window(map.mlx_.mlx_ptr, X_SIZE, Y_SIZE, (char *)"---Cub3D---");
+	get_texture(&map);
 	ft_resulotion(&map);
 	print_tmap(map);
 	if (put_2d_map(&map) != EXIT_SUCCESS)
 		return (FAILDE);
-	get_texture(&map);
-	put_3d_map(&map);
+	// put_3d_map(&map);
 	mlx_loop_hook(map.mlx_.mlx_ptr, hook, &map);
 	mlx_loop(map.mlx_.mlx_ptr);
 }

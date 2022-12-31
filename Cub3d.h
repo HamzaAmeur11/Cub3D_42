@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/30 23:40:33 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/31 02:28:18 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 #define ROOOT 5
 
 #define TILE_SIZE 32
-#define X_SIZE 1200
+#define X_SIZE 1080
 #define Y_SIZE 720
 #define FOV_D 60.0
 #define FOV_R (FOV_D * M_PI) / 180
@@ -69,6 +69,7 @@ typedef struct t_point
 	bool	pos;
 	double 	x;
 	double 	y;
+
 }	t_point;
 
 typedef struct t_plr

@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:24:59 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/30 21:36:42 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/31 00:21:49 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ double deg_to_rad(double deg)
 {
 	return (deg * M_PI / 180);
 }
-
 
 int	ft_strlen(char *str)
 {
