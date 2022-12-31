@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/25 18:04:37 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/31 02:11:16 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@
 #define A 0
 #define D 2
 
-#define SPEED 10
+#define SPEED 8
 #define ROOOT 5
 
-#define TILE_SIZE 32
-#define X_SIZE 1200
-#define Y_SIZE 720
+#define TILE_SIZE 10
+#define X_SIZE 1080
+#define Y_SIZE 700
 #define FOV_D 60.0
 #define FOV_R (FOV_D * M_PI) / 180
 #define VAR 4
@@ -53,6 +53,9 @@
 #include <stdbool.h>
 #include "gnl.h"
 
+
+
+
 typedef struct t_bool
 {
 	bool up;
@@ -63,8 +66,9 @@ typedef struct t_bool
 
 typedef struct t_point
 {
-	double x;
-	double y;
+	bool	pos;
+	double 	x;
+	double 	y;
 }	t_point;
 
 typedef struct t_plr
@@ -81,11 +85,23 @@ typedef struct t_plr
 	double rot_speed;
 }	t_plr;
 
+
 typedef struct t_mlx
 {
 	void *mlx_ptr;
 	void *win_ptr;
 }	t_mlx;
+
+typedef struct t_img
+{
+	void	*img;
+	int		*addr;
+	int		bpp;
+	int		sl;
+	int		end;
+	int		w;
+	int		h;
+}		t_img;
 
 typedef struct t_map
 {
@@ -93,6 +109,12 @@ typedef struct t_map
 	t_bool	dir;
 	t_plr	plr;
 	t_mlx	mlx_;
+	t_img	south;
+	t_img	west;
+	t_img	north;
+	t_img	east;
+	int		offsetx;
+	int		offsety;
 	int		fl;
 	int		ce;
 	int		height;    // y_max / TILE
@@ -102,8 +124,8 @@ typedef struct t_map
 	char	*we;
 	char	*ea;
 	double	ray_angle;
+	t_point	inter_p[X_SIZE];
 	double inter[X_SIZE];
-	double ray_angl[X_SIZE];
 }	t_map;
 
 typedef struct t_check
@@ -152,7 +174,7 @@ double normalize_rad(double angle);
 
 
 
-
+void    get_texture(t_map *map);
 bool is_player(t_map *map, double i, double j);
 void put_square(t_map *map, int start_x, int start_y, int clr);
 int is_upper_char(char c);
@@ -169,7 +191,7 @@ void init_stps(t_map *map, t_bool *dirction, long *x_stp, long *y_stp);
 void horiz_inter(t_map *map, t_point *p, double angle);
 void put_line(t_map *map, t_point n, t_point m, int clr);
 
-
+void put_3d_map(t_map *map);
 void init_stps(t_map *map, t_bool *dirction, long *x_stp, long *y_stp);
 
 //__________________Utils____

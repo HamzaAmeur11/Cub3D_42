@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hameur <hameur@student.42.fr>              +#+  +:+       +#+         #
+#    By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/29 13:48:25 by hameur            #+#    #+#              #
-#    Updated: 2022/12/23 20:25:49 by hameur           ###   ########.fr        #
+#    Updated: 2022/12/26 19:53:45 by megrisse         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,7 @@ SRC	:=	cub3D.c \
 		parse_map.c \
 		find_interaction.c \
 		put_map.c \
+		textures.c \
 
 OBJS	:=	$(SRC:.c=.o)
 
