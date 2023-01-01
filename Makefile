@@ -6,7 +6,7 @@
 #    By: hameur <hameur@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/29 13:48:25 by hameur            #+#    #+#              #
-#    Updated: 2022/12/23 20:25:49 by hameur           ###   ########.fr        #
+#    Updated: 2023/01/01 01:03:50 by hameur           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ CC	:=	gcc
 CFLAGS	:=	-Wall -Wextra -Werror
 
 MLXFLAGS := -lmlx -framework OpenGL -framework AppKit
-
+#new files : `hooks.c ....
 SRC	:=	cub3D.c \
 		cub_utils.c \
 		ft_split.c \
@@ -30,6 +30,12 @@ SRC	:=	cub3D.c \
 		parse_map.c \
 		find_interaction.c \
 		put_map.c \
+		textures.c \
+		hooks.c \
+		check_map_utils.c \
+		cub_math.c \
+		cub_utils_2.c \
+		edit_pos.c \
 
 OBJS	:=	$(SRC:.c=.o)
 

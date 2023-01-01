@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:52:24 by hameur            #+#    #+#             */
-/*   Updated: 2022/11/29 15:54:44 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/30 19:14:51 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
 
-int	nbr_mots	(char const *s, char c)
+int	nbr_mots(char const *s, char c)
 {
 	int	i;
 	int	nbr_mots;
