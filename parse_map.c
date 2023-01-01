@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 19:04:13 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/30 21:38:49 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/31 23:45:40 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ int	error_args(int ac)
 	else if (ac == 1)
 	{
 		ft_putstr_fd((char *)"Didn't send any arg\n", 2);
-		return (EXIT_FAILURE);
+		return (FAILURE);
 	}
 	else
 	{
 		ft_putstr_fd((char *)"You send many args !!!\n", 2);
-		return (EXIT_FAILURE + EXIT_FAILURE);
+		return (FAILURE + FAILURE);
 	}
 }
 
@@ -42,9 +42,9 @@ int	check_extens(char *str)
 		i++;
 	if (str[i] == 0)
 		return (FAILDE);
-	if (ft_strncmp(str + i, (char *)".cub", 5) != EXIT_SUCCESS)
+	if (ft_strncmp(str + i, (char *)".cub", 5) != SUCCESS)
 		return (FAILDE);
-	return (EXIT_SUCCESS);
+	return (SUCCESS);
 }
 
 
@@ -88,7 +88,7 @@ void check_colors(char *file, int *check)
 	if (file[i] != 0)
 		*check = FAILDE;
 	else
-		*check = EXIT_SUCCESS;
+		*check = SUCCESS;
 }
 
 void check_xpms(char *file, int *check)
@@ -105,33 +105,33 @@ void check_xpms(char *file, int *check)
 	}
 	if (j == -1)
 		*check = FAILDE;
-	else if (ft_strncmp((char *)".xpm", file + j, 4) != EXIT_SUCCESS)
+	else if (ft_strncmp((char *)".xpm", file + j, 4) != SUCCESS)
 		*check = FAILDE;	
 	else
-		*check = EXIT_SUCCESS;
+		*check = SUCCESS;
 }
 
 int check_check(t_check *check)
 {
-	if (check->no != EXIT_SUCCESS)
+	if (check->no != SUCCESS)
 		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !\n", 2), EXIT_FAILURE);
-	if (check->so != EXIT_SUCCESS)
+			"Syntaxe error in map !\n", 2), FAILURE);
+	if (check->so != SUCCESS)
 		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!\n", 2), EXIT_FAILURE);
-	if (check->we != EXIT_SUCCESS)
+			"Syntaxe error in map !!\n", 2), FAILURE);
+	if (check->we != SUCCESS)
 		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!!\n", 2), EXIT_FAILURE);
-	if (check->ea != EXIT_SUCCESS)
+			"Syntaxe error in map !!!\n", 2), FAILURE);
+	if (check->ea != SUCCESS)
 		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!!!\n", 2), EXIT_FAILURE);
-	if (check->fl != EXIT_SUCCESS)
+			"Syntaxe error in map !!!!\n", 2), FAILURE);
+	if (check->fl != SUCCESS)
 		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!!!!\n", 2), EXIT_FAILURE);
-	if (check->ce != EXIT_SUCCESS)
+			"Syntaxe error in map !!!!!\n", 2), FAILURE);
+	if (check->ce != SUCCESS)
 		return (ft_putstr_fd((char *)
-			"Syntaxe error in map !!!!!!\n", 2), EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+			"Syntaxe error in map !!!!!!\n", 2), FAILURE);
+	return (SUCCESS);
 }
 
 int check_rgb_and_xpms(char **file, t_check *check)
@@ -155,9 +155,9 @@ int check_rgb_and_xpms(char **file, t_check *check)
 			break ;
 		i++;
 	}
-	if (check_check(check) != EXIT_SUCCESS)
-		return (EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+	if (check_check(check) != SUCCESS)
+		return (FAILURE);
+	return (SUCCESS);
 }
 
 void init_check(t_check *check)
@@ -198,7 +198,7 @@ int init_rgb(char *str, int *r, int *g, int *b)
 	*b = ft_atoi(tmp[2]);
 	if (*r > 255 || *g > 255 || *b > 255)
 		return (FAILDE);
-	return (ft_free(tmp), EXIT_SUCCESS);
+	return (ft_free(tmp), SUCCESS);
 }
 
 int init_colors(char *str)
@@ -209,7 +209,7 @@ int init_colors(char *str)
 	int	clr;
 
 	clr = 0;
-	if (init_rgb(str, &r, &g, &b) != EXIT_SUCCESS)
+	if (init_rgb(str, &r, &g, &b) != SUCCESS)
 		return (FAILDE);
 	//		| 0 | R | G | B |   color integer
     //    	+---+---+---+---+
@@ -238,9 +238,9 @@ int init_xpm_clr(t_map *map, char **file)
 			map->ea = init_xpms(file[i]);
 		i++;
 	}
-	if (map->ce < EXIT_SUCCESS || map->fl < EXIT_SUCCESS)
-		return(EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+	if (map->ce < SUCCESS || map->fl < SUCCESS)
+		return(FAILURE);
+	return (SUCCESS);
 }
 
 int check_file(t_map *map, char **file)
@@ -248,44 +248,30 @@ int check_file(t_map *map, char **file)
 	t_check check;
 	
 	init_check(&check);
-	if (check_rgb_and_xpms(file, &check) != EXIT_SUCCESS)
-		return (EXIT_FAILURE);
-	if (check_map_elmnt(file, &check) != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)"Sntx Error Map\n", 2), EXIT_FAILURE);
-	if (check_map_walls(map, file) != EXIT_SUCCESS)
-		return (ft_putstr_fd((char *)"Wall Error Map\n", 2), EXIT_FAILURE);
-	if (init_xpm_clr(map, file) != EXIT_SUCCESS)
-		return (ft_free(map->map), ft_putstr_fd((char *)"RGB Error\n", 2), EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+	if (check_rgb_and_xpms(file, &check) != SUCCESS)
+		return (FAILURE);
+	if (check_map_elmnt(file, &check) != SUCCESS)
+		return (ft_putstr_fd((char *)"Sntx Error Map\n", 2), FAILURE);
+	if (check_map_walls(map, file) != SUCCESS)
+		return (ft_putstr_fd((char *)"Wall Error Map\n", 2), FAILURE);
+	if (init_xpm_clr(map, file) != SUCCESS)
+		return (ft_free(map->map), ft_putstr_fd((char *)"RGB Error\n", 2), FAILURE);
+	return (SUCCESS);
 }
 
 int	parse_map(t_map *map, char *file_name)
 {
 	char **file;
 	(void)map;
-	if (check_extens(file_name) != EXIT_SUCCESS)
+	if (check_extens(file_name) != SUCCESS)
 		return (error_args(FAILDE), FAILDE);
 	file = NULL;
 	file = init_file(file_name);
 	if (file == NULL)//protect NULL IN file to the next fct
-		return (ft_putstr_fd((char *)"Empty File !!!\n", 2) ,EXIT_FAILURE);
-	if (check_file(map, file) != EXIT_SUCCESS)
-		return(ft_free(file), EXIT_FAILURE);
-	return (ft_free(file), EXIT_SUCCESS);
-}
-
-void print_tmap(t_map map)
-{
-	printf("width = %d && h = %d && x = %f && y = %f& drt =%f\n", map.width, map.height, map.plr.x, map.plr.y, map.plr.alpha);
-	printf("fl = %d|\n", map.fl);
-	printf("ce = %d|\n", map.ce);
-	printf("no = %s|\n", map.no);
-	printf("so = %s|\n", map.so);
-	printf("we = %s|\n", map.we);
-	printf("ea = %s|\n", map.ea);
-	int i = -1;
-	while (map.map[++i])
-		printf("-%s|\n", map.map[i]);
+		return (ft_putstr_fd((char *)"Empty File !!!\n", 2) ,FAILURE);
+	if (check_file(map, file) != SUCCESS)
+		return(ft_free(file), FAILURE);
+	return (ft_free(file), SUCCESS);
 }
 
 void	ft_resulotion(t_map *map)
