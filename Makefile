@@ -6,7 +6,7 @@
 #    By: hameur <hameur@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/29 13:48:25 by hameur            #+#    #+#              #
-#    Updated: 2023/01/01 01:03:50 by hameur           ###   ########.fr        #
+#    Updated: 2023/01/01 01:33:14 by hameur           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,6 @@ SRC	:=	cub3D.c \
 		gnl.c \
 		check_map.c \
 		parse_map.c \
-		find_interaction.c \
 		put_map.c \
 		textures.c \
 		hooks.c \
@@ -36,6 +35,11 @@ SRC	:=	cub3D.c \
 		cub_math.c \
 		cub_utils_2.c \
 		edit_pos.c \
+		find_interaction.c \
+		find_interaction_h.c \
+		find_interaction_v.c \
+		init_xpm_clr.c \
+		check_xpm_clr.c \
 
 OBJS	:=	$(SRC:.c=.o)
 

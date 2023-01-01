@@ -6,7 +6,7 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2023/01/01 00:57:55 by hameur           ###   ########.fr       */
+/*   Updated: 2023/01/01 01:49:43 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,15 +157,12 @@ char	**init_map(char **file);
 int		vertical_check(char **map);
 int		horizontale_check(char **map);
 int		init_player_pos(t_map *map);
-
 char	**alloc_map(char **fl, int s, int i, int j);
 char	*init_str(char *map_x, int size);
 int		check_map_elmnt(char	**file, t_check *check);
 int		map_elements(char c);
 void	init_pos(t_plr *plr, int x, int y, char c);
 void	init_angle(t_plr *plr, char c);
-//-----------------------------------//
-
 int		error_args(int ac);
 int		parse_map(t_map *map, char *file_name);
 void	ft_resulotion(t_map *map);
@@ -184,32 +181,29 @@ int		check_extens(char *str);
 int		error_args(int ac);
 int		is_upper_char(char c);
 
-//-----------------------------------//
+//HOOKS-----------------------------------//
 
 void	my_hooks(t_map *map);
 double	distence(t_point p, t_point q);
 void	edit_pos_side(t_map *map);
 void	edit_pos_walk(t_map *map);
-void	init_texture(t_map *map, int i, int **tmp);
 void	put_texture(t_map *map, int i, int *j, t_wall *wall);
-void	init_texture(t_map *map, int i, int **tmp);
+void	init_texture(t_map *map, int i, t_img *tmp);
 
-//-----------------------------------//
-
+int		check_if_wall(t_map *map, double x, double y);
+int		check_2_walls(t_map *map, t_point *f, long angle);
 void	get_texture(t_map *map);
 int		is_upper_char(char c);
 void	send_rays(t_map *map);
 void	put_char(t_map *map, char c, int i, int j);
 void	put_wall(t_map *map);
-//-----------------------------------//
 void	vertic_inter(t_map *map, t_point *p, double angle);
 void	horiz_inter(t_map *map, t_point *p, double angle);
-//-----------------------------------//
-//-----------------------------------//
 double	normalize_rad(double angle);
 double	normalize_deg(double angle);
 double	rad_to_deg(double rad);
 double	deg_to_rad(double deg);
+
 //__________________Utils____
 int		ft_atoi(char *str);
 int		ft_strlen(char *str);
