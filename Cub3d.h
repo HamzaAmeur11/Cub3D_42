@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 16:09:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/31 02:28:18 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/31 22:09:21 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@
 #define D 2
 
 #define SPEED 10
-#define ROOOT 5
+#define ROOOT 7
 
-#define TILE_SIZE 32
-#define X_SIZE 1080
-#define Y_SIZE 720
+#define TILE_SIZE 10
+#define X_SIZE 1200
+#define Y_SIZE 350
 #define FOV_D 60.0
 #define FOV_R (FOV_D * M_PI) / 180
 #define VAR 4
@@ -77,6 +77,8 @@ typedef struct t_plr
 	t_point p;
 	double x;
 	double y;
+	int		x_m;
+	int		y_m;
 	double alpha;
 	double beta;
 	int 	turn;  // -1 if alpha left && +1 if alpha right
@@ -153,7 +155,6 @@ char	**alloc_map(char **fl, int s, int i, int j);
 char	**init_map(char **file);
 void	ft_resulotion(t_map *map);
 void	print_tmap(t_map map);
-int		parse_map(t_map *map, char *file_name);
 int		check_file(t_map *map, char **file);
 int		init_xpm_clr(t_map *map, char **file);
 int		init_colors(char *str);
@@ -170,11 +171,11 @@ int		error_args(int ac);
 int		is_upper_char(char c);
 
 
-
+int	check_2_walls(t_map *map, t_point *f, long angle);
 
 double normalize_rad(double angle);
 
-
+int	check_if_wall(t_map *map, double x, double y);
 
 void    get_texture(t_map *map);
 bool is_player(t_map *map, double i, double j);

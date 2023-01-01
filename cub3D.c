@@ -6,7 +6,7 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:58:07 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/31 02:47:37 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/31 21:47:49 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,36 +37,49 @@ double normalize_deg(double angle)
 	return (angle);
 }
 
-int    up_2_wall(t_map *map, double x, double y, double angle)
+int    up_2_wall(t_map *map, int x, int y, double angle)
 {
-    if (angle >= 0 && angle < 90)
-        if (map->map[(int)(map->plr.y / TILE_SIZE)][(int)(map->plr.x / TILE_SIZE) + 1] == '1' && 
-            map->map[(int)(map->plr.y / TILE_SIZE) + 1][(int)(map->plr.x / TILE_SIZE)] == '1' && 
-			map->map[(int)(y / TILE_SIZE)][(int)(x / TILE_SIZE) - 1] == '1' && 
-            map->map[(int)(y / TILE_SIZE) - 1][(int)(x / TILE_SIZE)] == '1')
-                return (EXIT_FAILURE);
-    if (angle >= 90 && angle < 180)
-        if (map->map[(int)(map->plr.y / TILE_SIZE)][(int)(map->plr.x / TILE_SIZE) - 1] == '1' && 
-            map->map[(int)(map->plr.y / TILE_SIZE) + 1][(int)(map->plr.x / TILE_SIZE)] == '1' &&
-			map->map[(int)(y / TILE_SIZE)][(int)(x / TILE_SIZE) + 1] == '1' && 
-            map->map[(int)(y / TILE_SIZE) - 1][(int)(x / TILE_SIZE)] == '1')
-                return (EXIT_FAILURE);
-    if (angle >= 180 && angle < 270)
-        if (map->map[(int)(map->plr.y / TILE_SIZE) - 1][(int)(map->plr.x / TILE_SIZE)] == '1' && 
-            map->map[(int)(map->plr.y / TILE_SIZE)][(int)(map->plr.x / TILE_SIZE) - 1] == '1' &&
-			map->map[(int)(y / TILE_SIZE) + 1][(int)(x / TILE_SIZE)] == '1' && 
-            map->map[(int)(y / TILE_SIZE)][(int)(x / TILE_SIZE) + 1] == '1')
-                return (EXIT_FAILURE);
-    if (angle >= 270 && angle < 360)
-        if (map->map[(int)(map->plr.y / TILE_SIZE)][(int)(map->plr.x / TILE_SIZE) + 1] == '1' && 
-            map->map[(int)(map->plr.y / TILE_SIZE) - 1][(int)(map->plr.x / TILE_SIZE)] == '1' &&
-			map->map[(int)(y / TILE_SIZE)][(int)(x / TILE_SIZE) - 1] == '1' && 
-            map->map[(int)(y / TILE_SIZE) + 1][(int)(x / TILE_SIZE)] == '1')
-                return (EXIT_FAILURE);
-    return (EXIT_SUCCESS);
+	if (angle >= 0 && angle < 90 && map->map[map->plr.y_m][map->plr.x_m + 1] == '1' && 
+		map->map[map->plr.y_m + 1][map->plr.x_m] == '1' && 
+		map->map[y][x - 1] == '1' && map->map[y - 1][x] == '1')
+				return (EXIT_FAILURE);
+	if (angle >= 90 && angle < 180 && map->map[map->plr.y_m][map->plr.x_m - 1] == '1' && 
+			map->map[map->plr.y_m + 1][map->plr.x_m] == '1' &&
+			map->map[y][x + 1] == '1' && map->map[y - 1][x] == '1')
+				return (EXIT_FAILURE);
+	if (angle >= 180 && angle < 270 && map->map[map->plr.y_m - 1][map->plr.x_m] == '1' && 
+			map->map[map->plr.y_m][map->plr.x_m - 1] == '1' &&
+			map->map[y + 1][x] == '1' && map->map[y][x + 1] == '1')
+				return (EXIT_FAILURE);
+	if (angle >= 270 && angle < 360 && map->map[map->plr.y_m][map->plr.x_m + 1] == '1' && 
+		map->map[map->plr.y_m - 1][map->plr.x_m] == '1' &&
+		map->map[y][x - 1] == '1' && map->map[y + 1][x] == '1')
+				return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
-void edit_pos_walk(t_map *map)
+int	down_2_wall(t_map *map, int x, int y, double angle)
+{
+	if (angle >= 0 && angle < 90 && map->map[map->plr.y_m][map->plr.x_m - 1] == '1' && 
+		map->map[map->plr.y_m - 1][map->plr.x_m] == '1' && 
+		map->map[y][x + 1] == '1' && map->map[y + 1][x] == '1')
+				return (EXIT_FAILURE);
+	if (angle >= 90 && angle < 180 && map->map[map->plr.y_m][map->plr.x_m + 1] == '1' && 
+			map->map[map->plr.y_m - 1][map->plr.x_m] == '1' &&
+			map->map[y][x - 1] == '1' && map->map[y + 1][x] == '1')
+				return (EXIT_FAILURE);
+	if (angle >= 180 && angle < 270 && map->map[map->plr.y_m + 1][map->plr.x_m] == '1' && 
+			map->map[map->plr.y_m][map->plr.x_m + 1] == '1' &&
+			map->map[y - 1][x] == '1' && map->map[y][x - 1] == '1')
+				return (EXIT_FAILURE);
+	if (angle >= 270 && angle < 360 && map->map[map->plr.y_m][map->plr.x_m - 1] == '1' && 
+		map->map[map->plr.y_m + 1][map->plr.x_m] == '1' &&
+		map->map[y][x + 1] == '1' && map->map[y - 1][x] == '1')
+				return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
+}
+
+void	edit_pos_walk(t_map *map)
 {
 	double new_x;
 	double new_y;
@@ -75,12 +88,16 @@ void edit_pos_walk(t_map *map)
 	new_y = map->plr.y + map->plr.walk * (map->plr.mov_speed) * sin(map->plr.beta);
 	if (map->map[(int)(new_y / TILE_SIZE)][(int)(new_x / TILE_SIZE)] == '1')
 		return ;
-	else if (up_2_wall(map, new_x, new_y, map->plr.alpha) != EXIT_SUCCESS && map->plr.walk > 0)
-		{printf("pppppppppp\n");return ;}
+	else if (up_2_wall(map, (int)(new_x / TILE_SIZE), (int)(new_y / TILE_SIZE), map->plr.alpha) != EXIT_SUCCESS && map->plr.walk > 0)
+		return ;
+	else if (down_2_wall(map, (int)(new_x / TILE_SIZE), (int)(new_y / TILE_SIZE), map->plr.alpha) != EXIT_SUCCESS && map->plr.walk < 0)
+		return ;
 	else
 	{
-		map->plr.x = new_x;	
+		map->plr.x = new_x;
+		map->plr.x_m = (int)(new_x / TILE_SIZE);
 		map->plr.y = new_y;	
+		map->plr.y_m = (int)(new_y / TILE_SIZE);
 	}
 }
 
@@ -100,24 +117,8 @@ void edit_pos_side(t_map *map)
 	}
 }
 
-int	moves(int keycode, t_map *map)
+int	moves(t_map *map)
 {
-	if (keycode == W)
-		map->plr.walk = +1;
-	if (keycode == S)
-		map->plr.walk = -1;
-	if (keycode == A)
-		map->plr.side = -1;
-	if (keycode == D)
-		map->plr.side = +1;
-	if (keycode == RIGHT_KEY)
-		map->plr.turn = +1;
-	if (keycode == LEFT_KEY)
-		map->plr.turn = -1;
-	if (keycode == ESC_KEY)
-		dest(map, 1);
-	// else
-	// 	return (0);
 	if (map->plr.turn != 0)
 	{
 		map->plr.alpha = normalize_deg(map->plr.alpha + (map->plr.turn * map->plr.rot_speed));
@@ -128,12 +129,7 @@ int	moves(int keycode, t_map *map)
 	if (map->plr.side != 0)
 		edit_pos_side(map);
 	mlx_clear_window(map->mlx_.mlx_ptr, map->mlx_.win_ptr);
-	// put_wall(map);
 	send_rays(map);
-	map->plr.turn = 0;
-	map->plr.walk = 0;
-	map->plr.side = 0;
-	// put_3d_map(map);
 	return (EXIT_SUCCESS);
 }
 
@@ -154,13 +150,26 @@ int	key_realesed(int keycode, t_map *map)
 	return (EXIT_SUCCESS);
 }
 
-int	hook(t_map *map)
+int key_press(int keycode, t_map *map)
 {
-	mlx_hook(map->mlx_.win_ptr, 17, 0, dest, map);
-	mlx_hook(map->mlx_.win_ptr, 2, 0, moves, map);
-	// mlx_hook(map->mlx_.mlx_ptr, 3, 0, key_realesed, map);
+	if (keycode == W)
+		map->plr.walk = +1;
+	if (keycode == S)
+		map->plr.walk = -1;
+	if (keycode == A)
+		map->plr.side = -1;
+	if (keycode == D)
+		map->plr.side = +1;
+	if (keycode == RIGHT_KEY)
+		map->plr.turn = +1;
+	if (keycode == LEFT_KEY)
+		map->plr.turn = -1;
+	if (keycode == ESC_KEY)
+		dest(map, 1);
 	return (EXIT_SUCCESS);
 }
+
+
 
 double distence(t_point p, t_point q)
 {
@@ -183,30 +192,30 @@ void interaction_pt(t_map *map, t_point *p, double angle)
 			
 }
 
-void init_texture(t_map *map, int i, int **tmp)
+void init_texture(t_map *map, int i, t_img *tmp)
 {
 	if (map->ray_angl[i] >= 0 && map->ray_angl[i] < M_PI / 2 && map->inter_p[i].pos)
-		*tmp = map->west.addr;
+		*tmp = map->west;
 	else if (map->ray_angl[i] >= 0 && map->ray_angl[i] < M_PI / 2 && !map->inter_p[i].pos)
-		*tmp = map->north.addr;
+		*tmp = map->north;
 	else if (map->ray_angl[i] >= M_PI / 2 && map->ray_angl[i] < M_PI && map->inter_p[i].pos)
-		*tmp = map->east.addr;
+		*tmp = map->east;
 	else if (map->ray_angl[i] >= M_PI / 2 && map->ray_angl[i] < M_PI && !map->inter_p[i].pos)
-		*tmp = map->north.addr;
+		*tmp = map->north;
 	else if (map->ray_angl[i] >= M_PI && map->ray_angl[i] < (3 * M_PI) / 2 && map->inter_p[i].pos)
-		*tmp = map->east.addr;
+		*tmp = map->east;
 	else if (map->ray_angl[i] >= M_PI && map->ray_angl[i] < (3 * M_PI) / 2 && !map->inter_p[i].pos)
-		*tmp = map->south.addr;
+		*tmp = map->south;
 	else if (map->ray_angl[i] >= (3 * M_PI) / 2 && map->ray_angl[i] < 2 * M_PI && map->inter_p[i].pos)
-		*tmp = map->west.addr;
+		*tmp = map->west;
 	else if (map->ray_angl[i] >= (3 * M_PI) / 2 && map->ray_angl[i] < 2 * M_PI && !map->inter_p[i].pos)
-		*tmp = map->south.addr;
+		*tmp = map->south;
 }
 
 void	put_texture(t_map *map, int i, int *j, double walltop, double down, double top)
 {
 	int	color;
-	int	*tmp = map->north.addr;
+	t_img	tmp;
 	int	dis;
 	int	wallstrip;
 	
@@ -219,8 +228,8 @@ void	put_texture(t_map *map, int i, int *j, double walltop, double down, double 
 	while ((*j)++ > top && (*j) < down)
 	{
 		dis = (*j) + ((wallstrip / 2) - (Y_SIZE / 2));
-		map->offsety = dis * ((float)map->south.h / wallstrip);
-		color = tmp[(map->south.w * map->offsety) + map->offsetx];
+		map->offsety = dis * ((float)tmp.h / wallstrip);
+		color = tmp.addr[(tmp.w * map->offsety) + map->offsetx];
 		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, *j, color);
 	}
 }
@@ -236,28 +245,12 @@ void fct(t_map *map, double wall_height, int i)
 	down_wall = (Y_SIZE / 2) + (wall_height / 2);
 	if (down_wall > Y_SIZE)
 		down_wall = Y_SIZE;
-    while (++j <= top_wall)
-        mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->ce);
+	while (++j <= top_wall)
+		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->ce);
 	put_texture(map, i, &j, wall_height, down_wall, top_wall);
-    while (j++ < Y_SIZE)
-        mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->fl);
-    
-}
-
-void put_3d_map(t_map *map)
-{
-	double projec_d;
-	double wall_height;
-	double d_ray;
-	int  i = -1;
-
-	while(++i <= X_SIZE)
-	{
-		d_ray = map->inter[i] * cos(map->ray_angl[i] - map->plr.beta);
-		projec_d = (X_SIZE / 2) / tan(FOV_R / 2);
-		wall_height = (TILE_SIZE / d_ray) * projec_d;
-		fct(map, wall_height, i);
-	}
+	while (j++ < Y_SIZE)
+		mlx_pixel_put(map->mlx_.mlx_ptr, map->mlx_.win_ptr, i, j, map->fl);
+	
 }
 
 void put_3d_map_(t_map *map,int i, double ray_angle, double distence)
@@ -266,10 +259,10 @@ void put_3d_map_(t_map *map,int i, double ray_angle, double distence)
 	double wall_height;
 	double d_ray;
 
-		d_ray = distence * cos(ray_angle - map->plr.beta);
-		projec_d = (X_SIZE / 2) / tan(FOV_R / 2);
-		wall_height = (TILE_SIZE / d_ray) * projec_d;
-		fct(map, wall_height, i);
+	d_ray = distence * cos(ray_angle - map->plr.beta);
+	projec_d = (X_SIZE / 2) / tan(FOV_R / 2);
+	wall_height = (TILE_SIZE / d_ray) * projec_d;
+	fct(map, wall_height, i);
 }
 
 void send_rays(t_map *map)
@@ -278,7 +271,6 @@ void send_rays(t_map *map)
 	t_point n;
 	map->plr.p.x = map->plr.x;
 	map->plr.p.y = map->plr.y;
-	// put_line(map, map->plr.p, n, 0xFF0000);
 	int i = -1;
 	while (++i < X_SIZE)
 	{
@@ -294,13 +286,6 @@ void send_rays(t_map *map)
 	}
 }
 
-int put_2d_map(t_map *map)
-{
-	// put_wall(map);
-	send_rays(map);
-	return (0);
-}
-
 int main(int ac, char **av)
 {
 	t_map map;
@@ -313,10 +298,10 @@ int main(int ac, char **av)
 	map.mlx_.win_ptr = mlx_new_window(map.mlx_.mlx_ptr, X_SIZE, Y_SIZE, (char *)"---Cub3D---");
 	get_texture(&map);
 	ft_resulotion(&map);
-	print_tmap(map);
-	if (put_2d_map(&map) != EXIT_SUCCESS)
-		return (FAILDE);
-	// put_3d_map(&map);
-	mlx_loop_hook(map.mlx_.mlx_ptr, hook, &map);
+	send_rays(&map);
+	mlx_hook(map.mlx_.win_ptr, 17, 0, dest, &map);
+	mlx_hook(map.mlx_.win_ptr, 2, 0, key_press, &map);
+	mlx_hook(map.mlx_.win_ptr, 3, 0, key_realesed, &map);
+	mlx_loop_hook(map.mlx_.mlx_ptr, moves, &map);
 	mlx_loop(map.mlx_.mlx_ptr);
 }

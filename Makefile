@@ -6,7 +6,7 @@
 #    By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/29 13:48:25 by hameur            #+#    #+#              #
-#    Updated: 2022/12/26 19:53:45 by megrisse         ###   ########.fr        #
+#    Updated: 2022/12/31 22:08:11 by megrisse         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,8 +29,12 @@ SRC	:=	cub3D.c \
 		check_map.c \
 		parse_map.c \
 		find_interaction.c \
+		find_interaction_h.c \
+		find_interaction_v.c \
 		put_map.c \
 		textures.c \
+		init_xpm_clr.c \
+		check_xpm_clr.c \
 
 OBJS	:=	$(SRC:.c=.o)
 

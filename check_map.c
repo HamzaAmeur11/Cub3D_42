@@ -6,48 +6,62 @@
 /*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 22:36:41 by megrisse          #+#    #+#             */
-/*   Updated: 2022/12/30 23:48:07 by megrisse         ###   ########.fr       */
+/*   Updated: 2022/12/31 18:18:03 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
 
-void ft_free(char **str)
+void	ft_free(char **str)
 {
-	int i;
+	int	i;
 
 	i = -1;
-	while(str[++i])
+	while (str[++i])
 		free(str[i]);
 	free(str);
 }
 
-void init_pos(t_plr *plr, int x, int y, char c)
+void	init_pos(t_plr *plr, int x, int y, char c)
 {
 	plr->x = (x + 0.5) * TILE_SIZE;
 	plr->y = (y + 0.5) * TILE_SIZE;
+	plr->x_m = x;
+	plr->y_m = y;
 	plr->turn = 0;
 	plr->walk = 0;
 	plr->side = 0;
 	plr->mov_speed = SPEED;
 	plr->rot_speed = ROOOT;
 	if (c == 'N')
-		plr->alpha = 270, plr->beta = (3 * M_PI) / 2;
+	{
+		plr->alpha = 270;
+		plr->beta = (3 * M_PI) / 2;
+	}
 	else if (c == 'W')
-		plr->alpha = 180, plr->beta = M_PI;
+	{
+		plr->alpha = 180;
+		plr->beta = M_PI;
+	}
 	else if (c == 'E')
-		plr->alpha = 0, plr->beta = 0;
+	{
+		plr->alpha = 0;
+		plr->beta = 0;
+	}
 	else if (c == 'S')
-		plr->alpha = 90, plr->beta = M_PI / 2;
+	{
+		plr->alpha = 90;
+		plr->beta = M_PI / 2;
+	}
 }
 
 int	map_elements(char c)
 {
-	static int i;
+	static int	i;
 
-	if (c == '1' || c == '0'  || c == ' ')
+	if (c == '1' || c == '0' || c == ' ')
 		return (EXIT_SUCCESS);
-	if ((c == 'S' || c == 'E' || c == 'W' || c == 'N') && i == 0)//F in map bonus
+	if ((c == 'S' || c == 'E' || c == 'W' || c == 'N') && i == 0)
 		return (i++, EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }
@@ -66,7 +80,7 @@ int	check_map_elmnt(char **file, t_check *check)
 		while (file[i][j])
 		{
 			if (map_elements(file[i][j]) == EXIT_FAILURE)
-				return (check->map = FAILDE, ft_putstr_fd((char *)"Char incorr!!!\n", 2), EXIT_FAILURE);
+				return (check->map = FAILDE, EXIT_FAILURE);
 			j++;
 		}
 		i++;
@@ -75,10 +89,12 @@ int	check_map_elmnt(char **file, t_check *check)
 	return (EXIT_SUCCESS);
 }
 
-char *init_str(char *map_x, int size)
+char	*init_str(char *map_x, int size)
 {
-	char *ret;
-	int		i = -1;
+	char	*ret;
+	int		i;
+
+	i = -1;
 	ret = (char *)malloc(sizeof(char) * (size + 1));
 	if (!ret)
 		return (NULL);
@@ -90,7 +106,7 @@ char *init_str(char *map_x, int size)
 	return (ret);
 }
 
-char **alloc_map(char **fl, int f, int i, int j)
+char	**alloc_map(char **fl, int f, int i, int j)
 {
 	char **map;
 	int	x = 0;
@@ -104,7 +120,7 @@ char **alloc_map(char **fl, int f, int i, int j)
 	return (map);
 }
 
-char **init_map(char **file)
+char	**init_map(char **file)
 {
 	int i = 0;
 	int j = 0;
@@ -121,11 +137,13 @@ char **init_map(char **file)
 	return (alloc_map(file, first, i, j));
 }
 
-int horizontale_check(char **map)
+int	horizontale_check(char **map)
 {
-	int i = 0;
-	int j = 0;
+	int i;
+	int j;
 
+	i = 0;
+	j = 0;
 	while (map[i] != NULL)
 	{
 		j = 0;
@@ -182,13 +200,13 @@ void init_player_pos(t_map *map)
 
 int	check_map_walls(t_map *maps, char **file)
 {
-	char **map;
+	char	**map;
 
 	map = NULL;
 	map = init_map(file);
-	if (vertical_check(map) != EXIT_SUCCESS)// ----
+	if (vertical_check(map) != EXIT_SUCCESS)
 		return (ft_free(map), EXIT_FAILURE);
-	if (horizontale_check(map) != EXIT_SUCCESS)//  |||
+	if (horizontale_check(map) != EXIT_SUCCESS)
 		return (ft_free(map), EXIT_FAILURE);
 	maps->map = map;
 	init_player_pos(maps);
