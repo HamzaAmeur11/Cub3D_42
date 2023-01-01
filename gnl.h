@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   gnl.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 16:51:18 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/11 19:09:19 by hameur           ###   ########.fr       */
+/*   Updated: 2023/01/01 01:12:15 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
+#ifndef GNL_H
 
-# define GET_NEXT_LINE_H
+# define GNL_H
 
 # include <unistd.h>
 # include <stdlib.h>

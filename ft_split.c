@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
+/*   By: megrisse <megrisse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:52:24 by hameur            #+#    #+#             */
-/*   Updated: 2022/11/29 15:54:44 by hameur           ###   ########.fr       */
+/*   Updated: 2022/12/31 21:52:09 by megrisse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
 
-int	nbr_mots	(char const *s, char c)
+int	nbr_mots(char const *s, char c)
 {
 	int	i;
 	int	nbr_mots;
@@ -39,11 +39,14 @@ int	nbr_mots	(char const *s, char c)
 	return (nbr_mots);
 }
 
-char *ft_copy(char *str, int start, int end)
+char	*ft_copy(char *str, int start, int end)
 {
-	char *ret;
-	int	i = 0;
-	int j = start;
+	char	*ret;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = start;
 	ret = (char *)malloc((end - start + 1) * sizeof(char));
 	while (j < end)
 		ret[i++] = str[j++];
@@ -51,9 +54,9 @@ char *ft_copy(char *str, int start, int end)
 	return (ret);
 }
 
-int find_char(char *str, int pos, char c, int id)
+int	find_char(char *str, int pos, char c, int id)
 {
-	while(str[pos] == c)
+	while (str[pos] == c)
 		pos++;
 	while (str[pos] != c && str[pos] != 0)
 		pos++;
@@ -63,7 +66,7 @@ int find_char(char *str, int pos, char c, int id)
 			pos++;
 	}
 	if (str[pos] == 0 && id == 0)
-		return(0);
+		return (0);
 	return (pos);
 }
 
@@ -85,7 +88,7 @@ static char	**ft_remplissage(char *s, char **copy, char c)
 		end = find_char(s, end + 1, c, 0);
 		start = find_char(s, start, c, 2) + 1;
 	}
-	end =  find_char(s, start + 1, c, 2);
+	end = find_char(s, start + 1, c, 2);
 	if (start != ft_strlen(s))
 		copy[i++] = ft_copy(s, start, end);
 	copy[i] = NULL;

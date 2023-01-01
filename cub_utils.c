@@ -6,32 +6,11 @@
 /*   By: hameur <hameur@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:24:59 by hameur            #+#    #+#             */
-/*   Updated: 2022/12/24 21:59:29 by hameur           ###   ########.fr       */
+/*   Updated: 2023/01/01 00:01:29 by hameur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cub3d.h"
-
-double rad_to_deg(double rad)
-{
-	return (rad * 180 / M_PI);
-}
-
-double deg_to_rad(double deg)
-{
-	return (deg * M_PI / 180);
-}
-
-
-int	ft_strlen(char *str)
-{
-	int i;
-
-	i = -1;
-	while (str[++i] != 0)
-		;
-	return (i);
-}
 
 char	*ft_strjoin(char *s1, char *s2)
 {
@@ -55,21 +34,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	while (s2[j] != 0)
 		p[i++] = s2[j++];
 	p[i] = 0;
+	free(s1);
 	return (p);
-}
-
-int	ft_strncmp(char *s1, char *s2, int n)
-{
-	int	x;
-
-	x = 0;
-	while ((s1[x] || s2[x]) && x < n)
-	{
-		if (s1[x] != s2[x])
-			return (s1[x] - s2[x]);
-		x++;
-	}
-	return (EXIT_SUCCESS);
 }
 
 char	*ft_strdup(char *s1)
@@ -88,52 +54,6 @@ char	*ft_strdup(char *s1)
 	return (p);
 }
 
-void ft_bzero(char *str, int size)
-{
-	int i;
-
-	i = 0;
-	while (i < size)
-		str[i++] = 0;
-}
-
-void	ft_putchar_fd(char c, int fd)
-{
-	write(fd, &c, 1);
-}
-
-void	ft_putnbr_fd(int n, int fd)
-{
-	if (n == -2147483648)
-		ft_putstr_fd((char *)"-2147483648", fd);
-	else if (n < 0)
-	{
-		ft_putchar_fd('-', fd);
-		ft_putnbr_fd(-n, fd);
-	}
-	else if (n < 10)
-		ft_putchar_fd(n + '0', fd);
-	else if (n >= 10)
-	{
-		ft_putnbr_fd(n / 10, fd);
-		ft_putnbr_fd(n % 10, fd);
-	}
-}
-
-void	ft_putstr_fd(char *s, int fd)
-{
-	int	i;
-
-	if (s == 0)
-		return ;
-	i = 0;
-	while (s[i] != '\0')
-	{
-		write(fd, &s[i], 1);
-		i++;
-	}
-}
-
 int	ft_atoi(char *str)
 {
 	int	resultat;
@@ -146,4 +66,28 @@ int	ft_atoi(char *str)
 	while ((str[i] >= '0') && (str[i] <= '9'))
 		resultat = (resultat * 10) + (str[i++] - '0');
 	return (resultat);
+}
+
+void	init_angle(t_plr *plr, char c)
+{
+	if (c == 'N')
+	{
+		plr->alpha = 270;
+		plr->beta = (3 * M_PI) / 2;
+	}
+	else if (c == 'W')
+	{
+		plr->alpha = 180;
+		plr->beta = M_PI;
+	}
+	else if (c == 'E')
+	{
+		plr->alpha = 0;
+		plr->beta = 0;
+	}
+	else if (c == 'S')
+	{
+		plr->alpha = 90;
+		plr->beta = M_PI / 2;
+	}
 }
